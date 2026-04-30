@@ -1,0 +1,298 @@
+.upload-page-wrapper{
+    height: 800px;
+}
+.upheading{
+    color: #32396e;
+    font-size: 25px;
+    text-align: center;
+}
+.uploadForm{
+    width: 900px;
+    height: 350px;
+}
+.base{
+    display: flex;
+    justify-content: center;
+}
+.dropbox{
+    /* position: relative; */
+    /* left: 450px; */
+    /* top: -220px; */
+    width: 420px;
+    display: flex;
+    justify-content: center;
+}
+.info{
+    width: 300px;
+}
+.title{
+    width: 200px;
+    margin-bottom:  10px;
+}
+.description{
+    width: 200px;
+}
+.submit{
+    position: relative;
+    top: -20px;
+    left: 193px;
+    width: 282px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.titleInputBox{
+    height: 20px;
+    width: 280px;
+    font-size: larger;
+}
+.desInputBox{
+    height: 100px;
+    width: 280px;
+    font-size: larger;
+    resize: none;
+}
+.upload-btn{
+    position: relative;
+    top: 25px;
+    border-radius: 30px 30px 30px 30px;
+    height: 43px;
+    width: 100px;
+    background-color: #32396e;
+    color: #F3F4FE;
+    cursor: pointer;
+    border-color: transparent;
+    font-size: 15px;
+    font-weight: bolder;
+}
+.remove-btn{
+    height: 20px;
+    position: relative; 
+    left: 94px;
+}
+.result{
+    height: 20px;
+}
+
+
+
+
+
+.course-grid {
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    justify-content: start; 
+}
+
+.course-card {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: white;
+    border: 2px solid transparent;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+}
+
+/* Selected State */
+.course-card.active {
+    border-color: #32396e; /* Green border */
+    transform: scale(1.05);
+}
+
+.selected-badge {
+    position: absolute;
+    top: 5px; right: 5px;
+    background: #4CAF50;
+    color: white;
+    width: 25px; height: 25px;
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-weight: bold;
+}
+
+/* Card Content */
+.card-img {
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+}
+
+.card-title {
+    height: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 5px;
+    background: #f9f9f9;
+}
+
+/* Add New Card */
+.course-card.add-new {
+    border: 2px dashed #aaa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+}
+
+.plus-icon {
+    font-size: 40px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* --- Modal Styles --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6); /* Dark transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.modal-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.cancel-btn {
+    background: #ccc;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.create-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* --- UX Tweak --- */
+.dimmed {
+    opacity: 0.5;
+    pointer-events: none; /* Prevents typing if course not selected */
+}
+.fillInfo{
+    position: relative;
+    left: 200px;
+    display: flex ;
+    flex-direction: row ;
+    justify-content: space-between;
+    width: 750px;
+}
+
+
+@media screen and (max-width: 900px) {
+  .fillInfo{
+    flex-direction: column;
+    height: auto;
+    left: 0px;
+    width: 370px;
+  }
+  .uploadForm {
+    width: 100% !important;
+    height: auto !important;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 30px;
+  }
+
+  /* 2. RESET INPUTS (Stop using absolute position) */
+  .info {
+    position: static; 
+    left: auto; top: auto;
+    width: 100%;
+    margin-bottom: 20px;
+      }
+
+  .title, .description, .titleInputBox, .desInputBox {
+    width: 100%;
+  }
+
+  /* 3. RESET DROPBOX (The main culprit!) */
+  .dropbox {
+    position: static; 
+    left: auto; top: auto;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  /* 4. RESET BUTTONS */
+  .submit {
+    position: static;
+    left: auto; top: auto;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .remove-btn, .upload-btn {
+    position: static;
+    width: 48%; /* Buttons share width */
+    margin: 0;
+  }
+
+  /* 5. MAKE COURSE GRID RESPONSIVE */
+  .course-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+    gap: 15px;
+  }
+
+  .course-card {
+    width: 100%;
+    height: auto;
+    min-height: 140px;
+  }
+
+  /* 6. FIX MODAL POPUP */
+  .modal-box {
+    width: 90%;
+  }
+}

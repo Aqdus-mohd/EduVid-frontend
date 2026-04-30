@@ -1,0 +1,219 @@
+/* --- 1. GLOBAL RESET --- */
+html, body, #root, .App {
+    max-width: 100vw;
+    overflow-x: hidden !important;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.content {
+    height: 800px;
+}
+
+/* --- 2. THE SPLIT LAYOUT --- */
+.lgn {
+    display: flex;
+    justify-content: flex-start; 
+    align-items: flex-start; /* 👈 Changed from stretch! Allows left and right to be different heights */
+    min-height: 100vh;
+    width: 100%;
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box;
+}
+
+.lgn-left {
+    background-image: url("loginpic.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 50%; 
+    height: 120vh; 
+    top: 0;
+}
+
+.lgn-right {
+    width: 50%; 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: flex-start; 
+    
+    padding-top: 60px;     
+    padding-bottom: 200px; 
+    padding-left: 80px; 
+    padding-right: 40px;
+    
+    min-height: 120vh; 
+    box-sizing: border-box; 
+}
+
+/* --- 3. FORM WRAPPERS (Allowed to stretch) --- */
+.lgn-right form, 
+.body {
+    width: 100%;
+    margin-top: 25px;
+}
+
+/* --- 4. HEADERS & INPUTS (Stretching perfectly) --- */
+.head {
+    color: #32396e;
+    height: 50px;
+    width: 100%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 650;
+    margin-bottom: 20px;
+}
+
+.he {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.inpt, #uname, #pword {
+    width: 100%; 
+    height: 40px;
+    border: 1px solid #d4cff8;
+    border-radius: 5px;
+    box-sizing: border-box; 
+}
+
+.inpt {
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+.inpt::placeholder {
+    color: #c0bbe7;
+    padding-left: 8px; 
+}
+
+.inpt:focus {
+    outline: none;  
+}
+
+.glow {
+    border: 1px solid #d4cff8;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+}
+
+.arrow {
+    padding-left: 5px;
+    padding-top: 2px;
+}
+
+/* --- 5. MAIN SUBMIT BUTTON --- */
+#log {
+    height: 38px;
+    width: 120px;
+    border-radius: 7px;
+    border: none;
+    cursor: pointer;
+    background-color: #4f5ebe;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto 0 auto; 
+}
+
+/* --- 6. STRICTLY LOCKED TOGGLES --- */
+.select {
+    position: relative; 
+    width: 350px;
+    min-width: 350px;
+    height: 40px;
+    margin: 0 auto 20px auto;
+    border-radius: 30px;
+    border: 1px solid #d4cff8;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    user-select: none;
+    cursor: pointer;
+}
+
+.selectTeacher {
+    position: relative; 
+    width: 180px;
+    min-width: 180px;
+    height: 40px;
+    margin: 0 auto 20px auto;
+    border-radius: 30px;
+    border: 1px solid #d4cff8;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    user-select: none;
+}
+
+.toggle, .role-toggle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%; 
+    border-radius: 30px;
+    background-color: #4f5ebe;
+    transition: transform 0.3s ease;
+    z-index: 1;
+    margin: 0; 
+}
+
+.select.on .toggle { transform: translateX(100%); }
+.selectTeacher.on .role-toggle { transform: translateX(100%); }
+
+.register-btn, .student-btn, .teacher-btn, .login-btn {
+    position: relative;
+    z-index: 2;
+    flex: 1; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 0; 
+    padding: 0;
+    font-weight: 500;
+}
+
+.register-btn, .student-btn { color: white; }
+.login-btn, .teacher-btn { color: #c0bbe7; }
+
+.on { color: white; }
+.off { color: #c0bbe7; }
+
+/* --- 7. MOBILE RESPONSIVENESS --- */
+@media (max-width: 900px) {
+    .lgn {
+        flex-direction: column; 
+        gap: 20px;
+    }
+    .lgn-left {
+        display: none; 
+    }
+    .lgn-right {
+        width: 100%;
+        padding: 20px;
+    }
+    .select {
+        width: 100%;
+        min-width: 100%;
+    }
+    .label {
+        width: 45px;
+    }
+    .icon {
+        margin-right: 0px;
+    }
+    .lgn-right{
+        min-height: 0;
+    }
+}   

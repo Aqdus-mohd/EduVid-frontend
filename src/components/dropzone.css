@@ -1,0 +1,11 @@
+.dropstyles {
+  border: 2px dashed #007bff;
+  border-radius: 5px;
+  padding: 30px;
+  text-align: center; 
+  background-color: #f9f9f9;
+  width: 350px;
+  height: 200px;
+  color: #32396e;
+  align-content: center;
+}

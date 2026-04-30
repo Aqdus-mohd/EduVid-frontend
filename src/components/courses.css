@@ -1,0 +1,332 @@
+* {
+  box-sizing: border-box;
+}
+
+.courses-page-wrapper {
+  width: 100%;
+  padding: 20px;
+  color: #32396e;
+}
+
+.courses-heading {
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.loading-text {
+  text-align: center;
+  font-size: 20px;
+  margin-top: 50px;
+  color: #4b44af;
+}
+
+/* --- VIEW 1: COURSE GRID --- */
+.public-course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); 
+  gap: 25px;
+}
+
+.public-course-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 1 / 1;
+
+}
+
+.public-course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.public-card-img {
+  width: 100%;
+  height: 65%;
+  object-fit: cover;
+}
+
+.public-card-info {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.public-card-title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #32396e;
+}
+
+.view-btn {
+  color: #4f5ebe;
+  font-weight: bold;
+  font-size: 14px;
+  align-self: flex-start;
+}
+
+/* --- VIEW 2: COURSE DETAIL HEADER --- */
+.back-btn {
+  background: none;
+  border: none;
+  color: #4f5ebe;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.course-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.detail-thumb {
+  width: 120px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.detail-title {
+  margin: 0;
+  font-size: 24px;
+}
+
+/* --- NEW: SQUARE VIDEO CARDS --- */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.video-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  aspect-ratio: 1 / 1; /* FORCES A PERFECT SQUARE! */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.video-card-icon {
+  background: #f3f4fe;
+  color: #4f5ebe;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.video-card-info {
+  flex-grow: 1; 
+  overflow: hidden; 
+}
+
+.video-card-info h4 {
+  margin: 0 0 8px 0;
+  color: #32396e;
+  font-size: 16px;
+}
+
+.video-card-info p {
+  margin: 0;
+  font-size: 13px;
+  color: #777;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.video-play-btn {
+  width: 100%;
+  background: #4f5ebe;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.video-play-btn:hover {
+  background: #3a459b;
+}
+
+/* --- NEW: CINEMATIC VIDEO PLAYER MODAL --- */
+.video-player-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 99999; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-player-container {
+  width: 90%;
+  max-width: 1000px;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #1a1a1a;
+  color: white;
+}
+
+.player-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.close-player-btn {
+  background: none;
+  border: none;
+  color: #ff4d4d;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.close-player-btn:hover {
+  color: #ff1a1a;
+}
+
+.actual-video-element {
+  width: 100%;
+  max-height: 80vh;
+  outline: none; 
+}
+/* =========================================
+   LOGIN WARNING BANNER
+   ========================================= */
+.login-warning-banner {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border-left: 5px solid #ffeeba;
+  margin-bottom: 25px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.banner-login-link {
+  color: #0056b3;
+  font-weight: bold;
+  text-decoration: underline;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.banner-login-link:hover {
+  color: #003d82;
+}
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media screen and (max-width: 768px) {
+
+  .public-course-grid {
+    grid-template-columns: repeat(2, 1fr); /* Exactly 2 per row */
+    gap: 15px; /* Slightly smaller gap to save space */
+  }
+
+  .public-course-card {
+    aspect-ratio: 1 / 1; 
+  }
+
+  .public-card-img {
+    height: 65%; /* Take up half the square */
+  }
+
+  .public-card-info {
+    padding: 10px; /* Less padding so text fits */
+    justify-content: space-evenly;
+  }
+
+  .public-card-title {
+    font-size: 14px; /* Smaller title */
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .view-btn {
+    font-size: 11px; /* Smaller button text */
+  }
+  
+  .course-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .detail-thumb {
+    width: 100%;
+    height: 180px;
+  }
+  
+  .video-card {
+    aspect-ratio: auto;
+    min-height: 250px;
+  }
+  
+  .player-header h3 {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70%;
+  }
+}

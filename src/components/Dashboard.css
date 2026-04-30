@@ -1,0 +1,141 @@
+.Hme{
+    width: 1030px;
+    height: 1300px;
+}
+.scoreboard{
+    margin-left: 40px;
+    height: 140px;
+    border-radius: 20px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+}
+.numbers{
+    height: 50px;
+    width: 290px;
+    border-right: 4px solid #c0bbe7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.numb4{
+    border: none;
+}
+.numb{
+    font-size: 30px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 550;
+    color: #32396e;
+}
+.numbOf{
+    color: #32396e;
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 500;
+}
+.startnowbox{
+    background-color: white;
+    height: 380px;
+    margin-left: 60px;
+    margin-top: 30px;
+    border-radius: 20px;
+    display: flex;
+}
+.startnowcontent{
+    height: 100%;
+    width: 550px;
+    padding-top: 42px;
+    padding-left: 32px;
+    
+}
+.startnowimg{
+    height: 100%;
+}
+.heading{
+    font-size: 35px;
+    font-weight: 700;
+    color: #32396e;
+    line-height: 1.2;
+}
+.intro{
+    color: #32396e;
+    font-size: 14px;
+    font-weight: 400;
+}
+.strt{
+    color: white;
+    background-color: #4f5ebe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    width: 170px;
+    border-radius: 7px;
+    font-size: 11px;
+}
+.strt:hover{
+    cursor: pointer;
+}
+
+
+
+@media screen and (max-width: 800px) {
+    .Hme{
+        width: 100% !important;
+        height: 800px;
+    }
+    .scoreboard{
+        width: 326px;
+        height: 180px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100% !important;           
+        max-width: 600px;
+        height: auto !important;
+        margin-left: 0 !important;
+    }
+    .numbers{
+        width: 145px;
+        width: 45% !important;
+        height: auto !important;
+        border-right: none !important;
+        margin-bottom: 10px;
+    }
+    .numb2{
+        border-right: none;
+        margin-top: 10px;
+    }
+    .numb1{
+        margin-top: 10px;
+        width: 165px;
+    }
+    .numb3{
+        width: 165px;
+    }
+    .startnowimg{
+        display: none;
+    }
+    .startnowbox{
+        margin-left: 0px;
+        justify-content: center;
+        width: 100% !important;  
+        height: auto !important;           
+        max-width: 600px;
+    }
+    .startnowcontent{
+        width: 100% !important;
+        padding-left: 20px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        padding-top: 20px;
+    }
+    .intro{
+        height: 100px;
+    }
+    .strt{
+        align-self: center;
+    }
+    
+}
