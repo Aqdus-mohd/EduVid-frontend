@@ -63,7 +63,7 @@ function Courses() {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:5000/api/courses/all", {
+      const res = await axios.get("https://eduvid-backend-zfkv.onrender.com/api/courses/all", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCourses(res.data);
@@ -78,7 +78,7 @@ function Courses() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        `http://localhost:5000/api/upload/course/${courseId}`,
+        `https://eduvid-backend-zfkv.onrender.com/api/upload/course/${courseId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },

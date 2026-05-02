@@ -43,7 +43,7 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
 
     try {
       const res = await axios.post(
-        isOn ? "http://localhost:5000/Login" : "http://localhost:5000/Register",
+        isOn ? "https://eduvid-backend-zfkv.onrender.com/Login" : "https://eduvid-backend-zfkv.onrender.com/Register",
         payload
       );
 

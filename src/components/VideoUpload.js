@@ -30,7 +30,7 @@ function VideoUpload() {
     try {
       const token = localStorage.getItem("token"); // Grab token
       const res = await axios.get(
-        `http://localhost:5000/api/courses`,
+        `https://eduvid-backend-zfkv.onrender.com/api/courses`,
         {
           headers: { Authorization: `Bearer ${token}` } // Show token
         });
@@ -55,7 +55,7 @@ function VideoUpload() {
     const token = localStorage.getItem("token"); // Grab token
 
     const createcoursepromise = axios.post(
-      "http://localhost:5000/api/courses",
+      "https://eduvid-backend-zfkv.onrender.com/api/courses",
       formData,
       {
         headers: { Authorization: `Bearer ${token}` }, // Show token
@@ -99,7 +99,7 @@ function VideoUpload() {
 
     const token = localStorage.getItem("token");//Grab Token 
     const uploadPromise = axios.post(
-      "http://localhost:5000/api/upload/finish-upload",
+      "https://eduvid-backend-zfkv.onrender.com/api/upload/finish-upload",
       formData,
       {
         headers: {

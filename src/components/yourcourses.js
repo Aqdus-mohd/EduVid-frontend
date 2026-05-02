@@ -44,7 +44,7 @@ function MyCourses() {
       const token = localStorage.getItem("token");
       // We send the userId to the backend so it only returns THEIR courses
       const res = await axios.get(
-        `http://localhost:5000/api/courses?userId=${userId}`,
+        `https://eduvid-backend-zfkv.onrender.com/api/courses?userId=${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -61,7 +61,7 @@ function MyCourses() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        `http://localhost:5000/api/upload/course/${courseId}`,
+        `https://eduvid-backend-zfkv.onrender.com/api/upload/course/${courseId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
