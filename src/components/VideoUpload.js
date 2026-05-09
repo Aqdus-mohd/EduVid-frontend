@@ -1,6 +1,6 @@
 import "./VideoUpload.css";
 import React, { useCallback, useEffect, useContext, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import axios from "axios";
 import FileDropzone from "./dropzone";
 import UserContext from "../context/UserContext";
@@ -64,21 +64,18 @@ function VideoUpload() {
       },
     );
     toast.promise(createcoursepromise, {
-      pending: "creating course please wait",
-      success: {
-        render({ data }) {
-          setCourses([data.data, ...courses]);
-          setSelectedCourseId(data.data.id);
-          setShowModal(false);
-          setNewCourseTitle("");
-          setNewCourseThumb(null);
-          return "New Course Created!";
-        },
+      loading: "Creating course, please wait...",
+      success: (res) => {
+        // res.data is the Axios response
+        setCourses([res.data.data, ...courses]);
+        setSelectedCourseId(res.data.data.id);
+        setShowModal(false);
+        setNewCourseTitle("");
+        setNewCourseThumb(null);
+        return "New Course Created!";
       },
-      error: {
-        render({ data }) {
-          return data.response?.data?.message || "Error creating course";
-        },
+      error: (err) => {
+        return err.response?.data?.message || "Error creating course";
       },
     });
   };
@@ -114,19 +111,17 @@ function VideoUpload() {
     );
 
     toast.promise(uploadPromise, {
-      pending: "Uploading video... Please wait.",
-      success: {
-        render({ data }) {
-          // Reset Video Form
-          setFile(null);
-          setFileName("");
-          setTitle("");
-          setDescription("");
-          setVideoThumbnail(null);
-          if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
-          setVideoPreviewUrl("");
-          return "Video uploaded successfully!";
-        },
+      loading: "Uploading video and thumbnail... Please wait.",
+      success: (res) => {
+        // Reset Video Form after successful upload
+        setFile(null);
+        setFileName("");
+        setTitle("");
+        setDescription("");
+        setVideoThumbnail(null);
+        if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
+        setVideoPreviewUrl("");
+        return "Video uploaded successfully!";
       },
       error: "Upload failed.",
     });
