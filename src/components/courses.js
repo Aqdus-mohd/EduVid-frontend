@@ -184,49 +184,59 @@ function Courses() {
               ) : (
                 videos.map((video, index) => (
                   <div key={video.id} className="video-card">
-                    {/* 1. THUMBNAIL AT THE TOP */}
-                    <div
-                      className="video-thumbnail-container"
+                    
+                    {/* 1. THUMBNAIL (Clicking this plays the video) */}
+                    <div 
+                      className="video-thumbnail-container" 
                       onClick={() => setPlayingVideo(video)}
                     >
                       {video.thumbnail_url ? (
-                        <img
-                          src={video.thumbnail_url}
-                          alt={video.title}
-                          className="video-thumbnail"
+                        <img 
+                          src={video.thumbnail_url} 
+                          alt={video.title} 
+                          className="video-thumbnail" 
                         />
                       ) : (
                         <div className="video-thumbnail-fallback">
                           <i className="fa-solid fa-video"></i>
                         </div>
                       )}
-
-                      {/* Cool hover effect for the play button */}
+                      
                       <div className="play-overlay">
                         <i className="fa-solid fa-play"></i>
                       </div>
                     </div>
 
-                    {/* 2. TEXT AND INFO AT THE BOTTOM */}
+                    {/* 2. TEXT AND INFO */}
                     <div className="video-card-info">
-                      <h4 className="video-title" title={video.title}>
+                      {/* Clicking the title also plays the video */}
+                      <h4 
+                        className="video-title clickable-title" 
+                        onClick={() => setPlayingVideo(video)}
+                        title={video.title}
+                      >
                         {index + 1}. {video.title}
                       </h4>
-                      <p
-                        className="video-description"
-                        title={video.description}
-                      >
-                        {video.description}
-                      </p>
+                      
+                      {/* 👉 NEW: Smart Description Toggle */}
+                      <div className="description-container">
+                        <p className={`video-description ${expandedDescId === video.id ? 'expanded' : ''}`}>
+                          {video.description}
+                        </p>
+                        
+                        {/* Only show "Read More" if the description is actually long! */}
+                        {video.description && video.description.length > 80 && (
+                          <span 
+                            className="read-more-btn"
+                            onClick={() => setExpandedDescId(expandedDescId === video.id ? null : video.id)}
+                          >
+                            {expandedDescId === video.id ? "Show Less" : "Read More..."}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
-                    {/* 3. PLAY BUTTON */}
-                    <button
-                      className="video-play-btn"
-                      onClick={() => setPlayingVideo(video)}
-                    >
-                      Play Video
-                    </button>
+                    {/* THE PLAY BUTTON HAS BEEN DELETED! 🎉 */}
                   </div>
                 ))
               )}
