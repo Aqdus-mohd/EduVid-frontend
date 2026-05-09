@@ -1,4 +1,5 @@
 import "./App.css";
+import axios from "axios";
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,7 +9,6 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
-// import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Courses from "./components/courses";
 import Dashboard from "./components/Dashboard";
@@ -24,7 +24,7 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activenav, setactivenav] = useState("dashboard");
-  const [isLoggedIn, setIsLoggedIn] = useState(() =>{
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem("isLoggedIn") === "true";
   });
   const [isPrClicked, setprClicked] = useState(false);
@@ -35,23 +35,9 @@ function AppContent() {
       ? JSON.parse(stored)
       : { username: "Guest User", email: "guest@example.com" };
   });
-  const [isChecking, setIsChecking] = useState(true);
 
   const menuRef = useRef();
   const imgRef = useRef();
-
-  //to keep user logged in
-  // useEffect(() => {
-  //   const savedLoginState = localStorage.getItem("isLoggedIn");
-  //   const savedUserInfo = localStorage.getItem("userInfo");
-
-  //   if (savedLoginState === "true" && savedUserInfo) {
-  //     setIsLoggedIn(true);
-  //     setUserInfo(JSON.parse(savedUserInfo));
-  //   }
-  //   setIsChecking(false);
-  // }, []);
-  
 
   //to check if the token is genuine or not
   useEffect(() => {
@@ -75,18 +61,27 @@ function AppContent() {
           // Step 4: THE FIX!
           // If the code drops into this 'catch' block, it means the server responded
           // with that 403 Forbidden error. The token is fake or expired.
+          if (
+            err.response &&
+            (err.response.status === 401 || err.response.status === 403)
+          ) {
+            // Nuke the local storage immediately so they can't try again
+            localStorage.removeItem("token");
+            localStorage.removeItem("userInfo");
+            localStorage.removeItem("isLoggedIn");
 
-          // Nuke the local storage immediately so they can't try again
-          localStorage.removeItem("token");
-          localStorage.removeItem("userInfo");
-          localStorage.removeItem("isLoggedIn");
+            // Reset React's memory to "Logged Out"
+            setIsLoggedIn(false);
+            setUserInfo({ username: "Guest User", email: "guest@example.com" });
 
-          // Reset React's memory to "Logged Out"
-          setIsLoggedIn(false);
-          setUserInfo({ username: "Guest User", email: "guest@example.com" });
-
-          // Force them to the login screen
-          navigate("/login");
+            // Force them to the login screen
+            navigate("/login");
+          } else {
+            console.error(
+              "Server check failed, but keeping user logged in:",
+              err,
+            );
+          }
         }
       }
     };
@@ -142,9 +137,6 @@ function AppContent() {
     }
   };
 
-  // if (isChecking) {
-  //   return <LoadingSpinner />;
-  // }
 
   return (
     <UserContext.Provider value={{ userInfo, setUserInfo }}>
