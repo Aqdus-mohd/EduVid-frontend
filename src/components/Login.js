@@ -3,8 +3,10 @@ import React, { useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom"; // Removed unused useFetcher
 import axios from "axios";
 import UserContext from "../context/UserContext";
+import toast from "react-hot-toast";
 
 export default function Login({ setactivenav, setIsLoggedIn }) {
+  const [loading, setLoading] = useState(false); //loading
   const [username, setusername] = useState("");
   const [email, setEmail] = useState("");
   const [pass, setPassword] = useState("");
@@ -23,9 +25,9 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
 
   const submitting = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     // Determine role only if registering
-    const role = !isOn && isTeacher ? 'teacher' : 'student';
+    const role = !isOn && isTeacher ? "teacher" : "student";
 
     // Construct payload dynamically based on whether it's login or register
     const payload = {
@@ -33,7 +35,8 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
       pass,
     };
 
-    if (!isOn) { // If Registering
+    if (!isOn) {
+      // If Registering
       payload.username = username;
       payload.role = role;
       if (isTeacher) {
@@ -43,50 +46,51 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
 
     try {
       const res = await axios.post(
-        isOn ? "https://eduvid-backend-zfkv.onrender.com/Login" : "https://eduvid-backend-zfkv.onrender.com/Register",
-        payload
+        isOn
+          ? "https://eduvid-backend-zfkv.onrender.com/Login"
+          : "https://eduvid-backend-zfkv.onrender.com/Register",
+        payload,
       );
 
       const msg = res.data.message || res.data;
 
-      if (msg === "Login successful") { // Use strict comparison for clarity
+      if (msg === "Login successful") {
+        // Use strict comparison for clarity
+        toast.success("Welcome back!");
         //temporary
-        console.log("SPY 1 - Server Response:", res.data); 
-        
-        alert(msg);
-        localStorage.setItem("token", res.data.token); 
+        console.log("SPY 1 - Server Response:", res.data);
+
+        localStorage.setItem("token", res.data.token);
         localStorage.setItem("isLoggedIn", "true");
-        
+
         // IMPORTANT: Save the entire user object, including ID, to localStorage
         const userData = {
-            id: res.data.user.id,
-            username: res.data.user.username,
-            email: res.data.user.email,
-            role: res.data.user.role
+          id: res.data.user.id,
+          username: res.data.user.username,
+          email: res.data.user.email,
+          role: res.data.user.role,
         };
         localStorage.setItem("userInfo", JSON.stringify(userData));
 
         setactivenav("dashboard");
         setIsLoggedIn(true);
-        
+
         // IMPORTANT: Update context with the entire user object
         setUserInfo(userData);
-        
+
         navigate("/");
-
       } else if (msg === "successfully registered") {
-        alert(msg);
+        toast.success("Account created! Please log in.");
         setIsOn(true); // Switch to login screen
-
       } else {
-        // This handles errors like "Invalid Pass Key!", "Email does not exist", etc.
-        // The 'msg' variable already holds the error message from the server.
-        alert(msg); 
+        console.error("Error:", err);
+        toast.error("An error occurred. Please try again.");
       }
-
     } catch (err) {
       console.error("Error during submission:", err); // Log the actual error
       alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,7 +117,7 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
           <div className={`register-btn ${isOn ? "off" : ""}`}>Register</div>
           <div className={`login-btn ${isOn ? "on" : ""}`}>Log In</div>
         </div>
-        
+
         {/* Role Selection - only for Register */}
         {!isOn && (
           <>
@@ -125,8 +129,12 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
               }}
             >
               <div className="role-toggle"></div>
-              <div className={`student-btn ${isTeacher ? "off" : ""}`}>Student</div>
-              <div className={`teacher-btn ${isTeacher ? "on" : ""}`}>Teacher</div>
+              <div className={`student-btn ${isTeacher ? "off" : ""}`}>
+                Student
+              </div>
+              <div className={`teacher-btn ${isTeacher ? "on" : ""}`}>
+                Teacher
+              </div>
             </div>
           </>
         )}
@@ -161,7 +169,9 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
             )}
 
             {/* Email */}
-            <label htmlFor="email" className="he mail"> {/* Fixed htmlFor */}
+            <label htmlFor="email" className="he mail">
+              {" "}
+              {/* Fixed htmlFor */}
               Email
             </label>
             <br />
@@ -183,9 +193,11 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
               required
             />
             <br />
-            
+
             {/* Password */}
-            <label htmlFor="password" className="he pass"> {/* Fixed htmlFor */}
+            <label htmlFor="password" className="he pass">
+              {" "}
+              {/* Fixed htmlFor */}
               Password
             </label>
             <br />
@@ -201,11 +213,13 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
               required
             />
             <br />
-            
+
             {/* passKey - only for Teacher Register */}
             {!isOn && isTeacher && (
               <>
-                <label htmlFor="passKey" className="he passKey"> {/* Fixed htmlFor */}
+                <label htmlFor="passKey" className="he passKey">
+                  {" "}
+                  {/* Fixed htmlFor */}
                   PassKey
                 </label>
                 <br />
@@ -224,13 +238,15 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
                 <br />
               </>
             )}
-            
+
             {/* Submit */}
             <button type="submit" id="log">
-              {isOn ? "Log In" : "Start Now"}
-              <span className="arrow">
-                <i className="fa-solid fa-arrow-right"></i>
-              </span>
+              {loading ? "Processing..." : isOn ? "Log In" : "Start Now"}
+              {!loading && (
+                <span className="arrow">
+                  <i className="fa-solid fa-arrow-right"></i>
+                </span>
+              )}
             </button>
           </form>
         </div>

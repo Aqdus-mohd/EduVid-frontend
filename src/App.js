@@ -17,6 +17,7 @@ import MyCourses from "./components/yourcourses";
 import { useState, useEffect, useRef } from "react";
 import UserContext from "./context/UserContext";
 import VideoUpload from "./components/VideoUpload";
+import { Toaster } from 'react-hot-toast';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -34,6 +35,18 @@ function AppContent() {
 
   const menuRef = useRef();
   const imgRef = useRef();
+
+  //to keep user logged in 
+  useEffect(() => {
+    const savedLoginState = localStorage.getItem("isLoggedIn");
+    const savedUserInfo = localStorage.getItem("userInfo");
+
+    if (savedLoginState === "true" && savedUserInfo) {
+      setIsLoggedIn(true);
+      setUserInfo(JSON.parse(savedUserInfo));
+    }
+  }, []);
+
 
   //to check if the token is genuine or not
   useEffect(() => {
@@ -123,6 +136,7 @@ function AppContent() {
 
   return (
     <UserContext.Provider value={{ userInfo, setUserInfo }}>
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="fullpage">
         <div className="nav">
           <Link
