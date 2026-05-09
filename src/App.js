@@ -49,9 +49,7 @@ function AppContent() {
     }
     setIsChecking(false);
   }, []);
-  if (isChecking) {
-    return <LoadingSpinner />;
-  }
+  
 
   //to check if the token is genuine or not
   useEffect(() => {
@@ -142,6 +140,10 @@ function AppContent() {
     }
   };
 
+  if (isChecking) {
+    return <LoadingSpinner />;
+  }
+  
   return (
     <UserContext.Provider value={{ userInfo, setUserInfo }}>
       <Toaster position="top-center" reverseOrder={false} />
