@@ -8,7 +8,7 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Courses from "./components/courses";
 import Dashboard from "./components/Dashboard";
@@ -17,7 +17,8 @@ import MyCourses from "./components/yourcourses";
 import { useState, useEffect, useRef } from "react";
 import UserContext from "./context/UserContext";
 import VideoUpload from "./components/VideoUpload";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 function AppContent() {
   const navigate = useNavigate();
@@ -32,11 +33,12 @@ function AppContent() {
       ? JSON.parse(stored)
       : { username: "Guest User", email: "guest@example.com" };
   });
+  const [isChecking, setIsChecking] = useState(true);
 
   const menuRef = useRef();
   const imgRef = useRef();
 
-  //to keep user logged in 
+  //to keep user logged in
   useEffect(() => {
     const savedLoginState = localStorage.getItem("isLoggedIn");
     const savedUserInfo = localStorage.getItem("userInfo");
@@ -45,8 +47,11 @@ function AppContent() {
       setIsLoggedIn(true);
       setUserInfo(JSON.parse(savedUserInfo));
     }
+    setIsChecking(false);
   }, []);
-
+  if (isChecking) {
+    return <LoadingSpinner />;
+  }
 
   //to check if the token is genuine or not
   useEffect(() => {
@@ -57,11 +62,14 @@ function AppContent() {
       if (token) {
         try {
           // Step 2: Send it to the Backend Bouncer to be checked
-          const res = await axios.get("https://eduvid-backend-zfkv.onrender.com/verify", {
-            headers: {
-              Authorization: `Bearer ${token}`,
+          const res = await axios.get(
+            "https://eduvid-backend-zfkv.onrender.com/verify",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             },
-          });
+          );
           // Step 3: If the server responds normally, we do nothing! Let them use the app.
         } catch (err) {
           // Step 4: THE FIX!
