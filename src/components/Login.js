@@ -26,6 +26,7 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
   const submitting = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const toastId = toast.loading("Processing...");
     // Determine role only if registering
     const role = !isOn && isTeacher ? "teacher" : "student";
 
@@ -56,7 +57,7 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
 
       if (msg === "Login successful") {
         // Use strict comparison for clarity
-        toast.success("Welcome back!");
+        toast.success("Welcome back!", { id: toastId });
         //temporary
         console.log("SPY 1 - Server Response:", res.data);
 
@@ -80,15 +81,16 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
 
         navigate("/");
       } else if (msg === "successfully registered") {
-        toast.success("Account created! Please log in.");
+        toast.success("Account created! Please log in.", { id: toastId });
         setIsOn(true); // Switch to login screen
       } else {
         console.error("Error:", err);
-        toast.error("An error occurred. Please try again.");
+        toast.error(msg, { id: toastId });
       }
     } catch (err) {
       console.error("Error during submission:", err); // Log the actual error
-      alert("An error occurred. Please try again.");
+      const specificError = err.response?.data?.message || err.response?.data || "Server crashed!";
+      toast.error(`Error: ${specificError}`, { id: toastId });
     } finally {
       setLoading(false);
     }
