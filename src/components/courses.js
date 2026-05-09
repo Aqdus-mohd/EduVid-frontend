@@ -63,9 +63,12 @@ function Courses() {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const res = await axios.get("https://eduvid-backend-zfkv.onrender.com/api/courses/all", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        "https://eduvid-backend-zfkv.onrender.com/api/courses/all",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       setCourses(res.data);
       setLoading(false);
     } catch (err) {
@@ -181,16 +184,43 @@ function Courses() {
               ) : (
                 videos.map((video, index) => (
                   <div key={video.id} className="video-card">
-                    <div className="video-card-icon">
-                      <i className="fa-solid fa-play"></i>
+                    {/* 1. THUMBNAIL AT THE TOP */}
+                    <div
+                      className="video-thumbnail-container"
+                      onClick={() => setPlayingVideo(video)}
+                    >
+                      {video.thumbnail_url ? (
+                        <img
+                          src={video.thumbnail_url}
+                          alt={video.title}
+                          className="video-thumbnail"
+                        />
+                      ) : (
+                        <div className="video-thumbnail-fallback">
+                          <i className="fa-solid fa-video"></i>
+                        </div>
+                      )}
+
+                      {/* Cool hover effect for the play button */}
+                      <div className="play-overlay">
+                        <i className="fa-solid fa-play"></i>
+                      </div>
                     </div>
+
+                    {/* 2. TEXT AND INFO AT THE BOTTOM */}
                     <div className="video-card-info">
-                      <h4>
+                      <h4 className="video-title" title={video.title}>
                         {index + 1}. {video.title}
                       </h4>
-                      <p>{video.description}</p>
+                      <p
+                        className="video-description"
+                        title={video.description}
+                      >
+                        {video.description}
+                      </p>
                     </div>
-                    {/* 👉 NEW: onClick to trigger the video player */}
+
+                    {/* 3. PLAY BUTTON */}
                     <button
                       className="video-play-btn"
                       onClick={() => setPlayingVideo(video)}
