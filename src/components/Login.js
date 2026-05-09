@@ -89,7 +89,8 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
       }
     } catch (err) {
       console.error("Error during submission:", err); // Log the actual error
-      const specificError = err.response?.data?.message || err.response?.data || "Server crashed!";
+      const specificError =
+        err.response?.data?.message || err.response?.data || "Server crashed!";
       toast.error(`Error: ${specificError}`, { id: toastId });
     } finally {
       setLoading(false);
