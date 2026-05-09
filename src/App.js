@@ -143,7 +143,7 @@ function AppContent() {
   if (isChecking) {
     return <LoadingSpinner />;
   }
-  
+
   return (
     <UserContext.Provider value={{ userInfo, setUserInfo }}>
       <Toaster position="top-center" reverseOrder={false} />
@@ -310,7 +310,6 @@ function AppContent() {
               }
             />
           </Routes>
-          <ToastContainer position="top-right" autoClose={5000} />
         </div>
       </div>
     </UserContext.Provider>
