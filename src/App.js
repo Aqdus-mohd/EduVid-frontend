@@ -24,7 +24,9 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activenav, setactivenav] = useState("dashboard");
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [isLoggedIn, setIsLoggedIn] = useState(() =>{
+    return localStorage.getItem("isLoggedIn") === "true";
+  });
   const [isPrClicked, setprClicked] = useState(false);
   const [isuploadClicked, setuploadClicked] = useState(false);
   const [userInfo, setUserInfo] = useState(() => {
@@ -39,16 +41,16 @@ function AppContent() {
   const imgRef = useRef();
 
   //to keep user logged in
-  useEffect(() => {
-    const savedLoginState = localStorage.getItem("isLoggedIn");
-    const savedUserInfo = localStorage.getItem("userInfo");
+  // useEffect(() => {
+  //   const savedLoginState = localStorage.getItem("isLoggedIn");
+  //   const savedUserInfo = localStorage.getItem("userInfo");
 
-    if (savedLoginState === "true" && savedUserInfo) {
-      setIsLoggedIn(true);
-      setUserInfo(JSON.parse(savedUserInfo));
-    }
-    setIsChecking(false);
-  }, []);
+  //   if (savedLoginState === "true" && savedUserInfo) {
+  //     setIsLoggedIn(true);
+  //     setUserInfo(JSON.parse(savedUserInfo));
+  //   }
+  //   setIsChecking(false);
+  // }, []);
   
 
   //to check if the token is genuine or not
@@ -140,9 +142,9 @@ function AppContent() {
     }
   };
 
-  if (isChecking) {
-    return <LoadingSpinner />;
-  }
+  // if (isChecking) {
+  //   return <LoadingSpinner />;
+  // }
 
   return (
     <UserContext.Provider value={{ userInfo, setUserInfo }}>
