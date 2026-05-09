@@ -23,6 +23,7 @@ function Courses() {
   const selectedCourse = courses.find(
     (c) => c.id.toString() === selectedCourseId,
   );
+  const [expandedDescId, setExpandedDescId] = useState(null);
 
   useEffect(() => {
     fetchAllCourses();
