@@ -18,7 +18,6 @@ import { useState, useEffect, useRef } from "react";
 import UserContext from "./context/UserContext";
 import VideoUpload from "./components/VideoUpload";
 import { Toaster } from "react-hot-toast";
-import LoadingSpinner from "./components/LoadingSpinner";
 
 function AppContent() {
   const navigate = useNavigate();
