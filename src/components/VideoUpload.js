@@ -18,6 +18,7 @@ function VideoUpload() {
   const [description, setDescription] = useState("");
   const [fileName, setFileName] = useState("");
   const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
+  const [videoThumbnail, setVideoThumbnail] = useState(null);
 
   const { userInfo } = useContext(UserContext);
 
@@ -32,8 +33,9 @@ function VideoUpload() {
       const res = await axios.get(
         `https://eduvid-backend-zfkv.onrender.com/api/courses`,
         {
-          headers: { Authorization: `Bearer ${token}` } // Show token
-        });
+          headers: { Authorization: `Bearer ${token}` }, // Show token
+        },
+      );
       setCourses(res.data);
     } catch (err) {
       console.error("Error fetching courses", err);
@@ -94,17 +96,19 @@ function VideoUpload() {
     formData.append("description", description);
     formData.append("courseId", selectedCourseId);
 
-
     formData.append("video", file);
 
-    const token = localStorage.getItem("token");//Grab Token 
+    if (videoThumbnail) {
+      formData.append("thumbnail", videoThumbnail);
+    }
+    const token = localStorage.getItem("token"); //Grab Token
     const uploadPromise = axios.post(
       "https://eduvid-backend-zfkv.onrender.com/api/upload/finish-upload",
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,// Show Token
+          Authorization: `Bearer ${token}`, // Show Token
         },
       },
     );
@@ -118,6 +122,7 @@ function VideoUpload() {
           setFileName("");
           setTitle("");
           setDescription("");
+          setVideoThumbnail(null);
           if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
           setVideoPreviewUrl("");
           return "Video uploaded successfully!";
@@ -229,7 +234,16 @@ function VideoUpload() {
                 />
               </div>
             </div>
-
+            {/*3: The HTML Input for the Video Thumbnail */}
+            <div className="thumbnail-upload" style={{ marginTop: "15px" }}>
+              <label>Video Thumbnail (Optional):</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setVideoThumbnail(e.target.files[0])}
+                className="titleInputBox"
+              />
+            </div>
             <div className="dropbox">
               <FileDropzone
                 onFileDropped={handleFileDrop}
