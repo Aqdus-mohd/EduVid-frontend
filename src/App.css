@@ -14,7 +14,6 @@ html, body {
     background-color: #F3F4FE;
     display: flex;
     overflow-x: hidden;
-
     min-height: 100vh; 
     width: 100%;
 }
@@ -28,12 +27,11 @@ html, body {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-    /* height: 120%; */
+    height: 120%;
     /* width: 275px; */
     width: 380px;
     background-color: #4b44af;
     user-select: none;
-    flex-shrink: 0;
 }
 
 
@@ -72,9 +70,8 @@ html, body {
 
 .content{
   padding-top: 41px;
-  /* width: 100%; */
+  width: 100%;
   padding-right: 40px;
-  flex-grow: 1;
 }
 .icon{
   margin-right: 10px;
