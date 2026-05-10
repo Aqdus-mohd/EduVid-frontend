@@ -39,7 +39,6 @@ html, body {
     width: 380px;
     background-color: #4b44af;
     user-select: none;    
-    flex-shrink: 0;
 }
 
 
