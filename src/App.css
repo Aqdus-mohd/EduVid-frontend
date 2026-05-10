@@ -8,14 +8,21 @@ html, body {
   min-height: 100%;
   width: 100%;
   overflow: hidden; 
+  background-color: #F3F4FE;
+}
+#root {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 .fullpage{
     /* height: 781px; */
     background-color: #F3F4FE;
     display: flex;
     /* overflow-x: hidden; */
-    min-height: 100vh; 
+    /* min-height: 100vh;  */
     width: 100%;
+    flex-grow: 1;
 }
 
 .App {
