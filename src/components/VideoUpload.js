@@ -226,7 +226,15 @@ function VideoUpload() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="desInputBox"
+                  maxLength={150} /* 👉 Stops them from typing past 150! */
                 />
+                {/* 👉 The Live Counter */}
+                <div className="char-counter">
+                  <span style={{ color: description.length >= 150 ? "red" : "#6c757d" }}>
+                    {description.length}
+                  </span>
+                  /150 characters
+                </div>
               </div>
             </div>
             {/*3: The HTML Input for the Video Thumbnail */}

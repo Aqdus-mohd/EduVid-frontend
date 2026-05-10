@@ -436,7 +436,24 @@
 .read-more-btn:hover {
   text-decoration: underline;
 }
+.video-card-info {
+  padding: 16px 20px; /* 👉 Increased left/right padding for a better boundary */
+  flex-grow: 1; 
+}
 
+.video-description {
+  margin: 8px 0 0 0; /* 👉 Adds a clean 8px gap between the Title and the Description */
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.5; /* Slightly taller line-height makes it easier to read */
+  
+  /* The 2-line clamp */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {
 
