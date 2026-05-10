@@ -38,9 +38,7 @@ html, body {
     min-height: 100vh;
     width: 380px;
     background-color: #4b44af;
-    user-select: none;
-    position: sticky;
-    
+    user-select: none;    
 }
 
 
