@@ -108,6 +108,19 @@ function AppContent() {
     };
   }, [isPrClicked]);
 
+  //track the navbar after reolad
+  useEffect(() => {
+  if (location.pathname === "/") {
+    setactivenav("dashboard");
+  } else if (location.pathname === "/courses") {
+    setactivenav("course"); // Keeps your custom "course" string
+  } else if (location.pathname === "/yourcourses") {
+    setactivenav("yourcourses");
+  } else if (location.pathname === "/VideoUpload") {
+    setactivenav("upload");
+  }
+}, [location.pathname]);
+
   //to prevent access pf any module by manually typing the url
   const ProtectedRoute = ({ children }) => {
     const token = localStorage.getItem("token");

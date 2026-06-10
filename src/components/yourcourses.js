@@ -1,55 +1,57 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
-import UserContext from "../context/UserContext"; // Make sure this path is correct!
-import "./courses.css"; // We can re-use your exact same CSS file!
+import { useSearchParams, Link } from "react-router-dom";
+import UserContext from "../context/UserContext";
+import "./courses.css"; 
 
 function MyCourses() {
-  const { userInfo } = useContext(UserContext); // 👉 1. Grab the logged-in user
+  const { userInfo } = useContext(UserContext);
+  
+  const isTeacher = userInfo && userInfo.role === "teacher";
 
-  const [myCourses, setMyCourses] = useState([]);
+  const [courses, setCourses] = useState([]);
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [playingVideo, setPlayingVideo] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCourseId = searchParams.get("course");
-  const selectedCourse = myCourses.find(
-    (c) => c.id.toString() === selectedCourseId,
+
+  const selectedCourse = courses.find(
+    (c) => c.id.toString() === selectedCourseId
   );
 
-  // 👉 2. Fetch only THIS teacher's courses
+ 
   useEffect(() => {
-    // Only try to fetch if they are a logged-in teacher
-    if (userInfo?.id && userInfo?.role === "teacher") {
+    if (userInfo?.id && isTeacher) {
       fetchMyCourses(userInfo.id);
     } else {
-      setLoading(false); // Stop loading if they aren't a teacher
+      setLoading(false); // Stop loading animation if security fails
     }
-  }, [userInfo]);
+  }, [userInfo, isTeacher]);
 
-  // Fetch videos when they click a specific course
+  // Fetch videos when a course is clicked
   useEffect(() => {
-    if (selectedCourseId) {
+    if (selectedCourseId && isTeacher) {
       fetchVideos(selectedCourseId);
     } else {
       setVideos([]);
       setPlayingVideo(null);
     }
-  }, [selectedCourseId]);
+  }, [selectedCourseId, isTeacher]);
 
+  // API Call: Get courses belonging to the specific teacher ID
   const fetchMyCourses = async (userId) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      // We send the userId to the backend so it only returns THEIR courses
       const res = await axios.get(
         `https://eduvid-backend-zfkv.onrender.com/api/courses?userId=${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        },
+        }
       );
-      setMyCourses(res.data);
+      setCourses(res.data);
       setLoading(false);
     } catch (err) {
       console.error("Error fetching my courses:", err);
@@ -57,6 +59,7 @@ function MyCourses() {
     }
   };
 
+  // API Call: Get videos for the selected course
   const fetchVideos = async (courseId) => {
     try {
       const token = localStorage.getItem("token");
@@ -64,7 +67,7 @@ function MyCourses() {
         `https://eduvid-backend-zfkv.onrender.com/api/upload/course/${courseId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        },
+        }
       );
       setVideos(res.data);
     } catch (err) {
@@ -81,45 +84,38 @@ function MyCourses() {
     setPlayingVideo(null);
   };
 
-  // ==========================================
-  // 🛑 SECURITY GATEWAY (STUDENTS STOP HERE)
-  // ==========================================
-  if (!userInfo || userInfo.role !== "teacher") {
+  // 1. Show Loading Text while API runs
+  if (loading) return <div className="loading-text">Loading your dashboard...</div>;
+
+  // 2. 🛑 ACCESS DENIED VIEW: If a student tries to hack or type the URL manually
+  if (!isTeacher) {
     return (
-      <div
-        className="courses-page-wrapper"
-        style={{ textAlign: "center", marginTop: "100px" }}
-      >
-        <h2 style={{ color: "#ff4d4d" }}>Access Denied</h2>
+      <div className="courses-page-wrapper" style={{ textAlign: "center", marginTop: "100px" }}>
+        <h2 style={{ color: "#ff4d4d" }}>🔒 Access Denied</h2>
         <p style={{ fontSize: "18px", color: "#32396e" }}>
-          This page is for instructors only. Please log in as a Teacher to
-          manage your courses.
+          This area is restricted to instructors only. Please log in with a Teacher account to manage your contents.
         </p>
+        <Link to="/Login" className="video-play-btn" style={{ display: "inline-block", textDecoration: "none", marginTop: "15px" }}>
+          Go to Login
+        </Link>
       </div>
     );
   }
 
-  if (loading)
-    return <div className="loading-text">Loading your courses...</div>;
-
-  // ==========================================
-  // ✅ TEACHER DASHBOARD (TEACHERS SEE THIS)
-  // ==========================================
+  // 3. ✅ TEACHER AREA (Only authorized teachers reach this line)
   return (
     <div className="courses-page-wrapper">
-      {/* --- VIEW 1: LIST MY COURSES --- */}
+      
+      {/* --- VIEW 1: LIST MY PRIVATE COURSES --- */}
       {!selectedCourse ? (
         <>
           <h2 className="courses-heading">My Uploaded Courses</h2>
           <div className="public-course-grid">
-            {myCourses.length === 0 ? (
-              <p>
-                You haven't uploaded any courses yet! Go to the upload page to
-                create one.
-              </p>
+            {courses.length === 0 ? (
+              <p>You haven't created any courses yet! Use the Upload tab to add your first course.</p>
             ) : null}
 
-            {myCourses.map((course) => (
+            {courses.map((course) => (
               <div
                 key={course.id}
                 className="public-course-card"
@@ -139,7 +135,7 @@ function MyCourses() {
           </div>
         </>
       ) : (
-        /* --- VIEW 2: LIST VIDEOS FOR SELECTED COURSE --- */
+        /* --- VIEW 2: LIST VIDEOS INSIDE THE SELECTED COURSE --- */
         <div className="course-detail-view">
           <button className="back-btn" onClick={handleBackClick}>
             ⬅ Back to My Courses
@@ -154,30 +150,47 @@ function MyCourses() {
             <h2 className="detail-title">{selectedCourse.title}</h2>
           </div>
 
-          <h3 className="videos-heading">Course Videos ({videos.length})</h3>
+          <h3 className="videos-heading">Uploaded Videos ({videos.length})</h3>
 
-          {/* Square Video Grid */}
           <div className="video-grid">
             {videos.length === 0 ? (
-              <p>No videos uploaded to this course yet.</p>
+              <p>No videos inside this course yet.</p>
             ) : (
               videos.map((video, index) => (
                 <div key={video.id} className="video-card">
-                  <div className="video-card-icon">
-                    <i className="fa-solid fa-play"></i>
-                  </div>
-                  <div className="video-card-info">
-                    <h4>
-                      {index + 1}. {video.title}
-                    </h4>
-                    <p>{video.description}</p>
-                  </div>
-                  <button
-                    className="video-play-btn"
+                  
+                  {/* Thumbnail Container */}
+                  <div
+                    className="video-thumbnail-container"
                     onClick={() => setPlayingVideo(video)}
                   >
-                    Play Video
-                  </button>
+                    {video.thumbnail_url ? (
+                      <img
+                        src={video.thumbnail_url}
+                        alt={video.title}
+                        className="video-thumbnail"
+                      />
+                    ) : (
+                      <div className="video-thumbnail-fallback">
+                        <i className="fa-solid fa-video"></i>
+                      </div>
+                    )}
+
+                    <div className="play-overlay">
+                      <i className="fa-solid fa-play"></i>
+                    </div>
+                  </div>
+
+                  {/* Video Title */}
+                  <div className="video-card-info">
+                    <h4
+                      className="video-title clickable-title"
+                      onClick={() => setPlayingVideo(video)}
+                      title={video.title}
+                    >
+                      {index + 1}. {video.title}
+                    </h4>
+                  </div>
                 </div>
               ))
             )}
@@ -185,7 +198,7 @@ function MyCourses() {
         </div>
       )}
 
-      {/* --- VIEW 3: THE CINEMATIC VIDEO PLAYER MODAL --- */}
+      {/* --- VIEW 3: CINEMATIC VIDEO PLAYER MODAL (WITH DESCRIPTION FIX) --- */}
       {playingVideo && (
         <div className="video-player-overlay">
           <div className="video-player-container">
@@ -207,6 +220,26 @@ function MyCourses() {
             >
               Your browser does not support HTML video.
             </video>
+
+            {/* Description displays inside player modal box cleanly */}
+            {playingVideo.description && (
+              <div
+                className="player-description-box"
+                style={{
+                  padding: "20px",
+                  color: "white",
+                  backgroundColor: "#111",
+                  height: "auto",
+                }}
+              >
+                <h4 style={{ margin: "0 0 10px 0", color: "#ccc" }}>
+                  About this video
+                </h4>
+                <p style={{ margin: 0, lineHeight: "1.6", color: "#eee", wordWrap: "break-word" }}>
+                  {playingVideo.description}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}
