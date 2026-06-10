@@ -296,6 +296,8 @@
   flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid #eee;
+  height: auto;
+  aspect-ratio: auto;
 }
 
 .video-card:hover {
@@ -404,9 +406,6 @@
   transition: color 0.2s;
 }
 
-.clickable-title:hover {
-  color: #0d6efd; /* Turns blue on hover to indicate it's a link */
-}
 
 /* Updated Description Logic */
 .video-description {
