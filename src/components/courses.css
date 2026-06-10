@@ -127,6 +127,7 @@
   aspect-ratio: 1 / 1; /* FORCES A PERFECT SQUARE! */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  padding-bottom: 10px;
 }
 
 .video-card:hover {
@@ -208,8 +209,11 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
+  height: 95vh;
 }
-
+.actual-video-element{
+  height: 450px;
+}
 .player-header {
   display: flex;
   justify-content: space-between;
@@ -306,12 +310,14 @@
   aspect-ratio: 16 / 9; /* Perfect YouTube video ratio */
   background: #e9ecef;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .video-thumbnail {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Prevents the image from stretching ugly */
+  object-fit: contain;
+  aspect-ratio: 16/9;
 }
 
 .video-thumbnail-fallback {
@@ -415,6 +421,7 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   transition: all 0.3s ease;
+
 }
 
 /* When expanded, remove the clamp! */
@@ -437,8 +444,9 @@
   text-decoration: underline;
 }
 .video-card-info {
-  padding: 16px 20px; /* 👉 Increased left/right padding for a better boundary */
-  flex-grow: 1; 
+  padding: 16px 20px;
+  padding-bottom: 0%; /* 👉 Increased left/right padding for a better boundary */
+  flex-grow: 2; 
 }
 
 .video-description {
@@ -447,12 +455,21 @@
   color: #666;
   line-height: 1.5; /* Slightly taller line-height makes it easier to read */
   
+  white-space: normal;
+  word-wrap: break-word;
+  height: 80px;
+
   /* The 2-line clamp */
   display: -webkit-box;
   -webkit-line-clamp: 2; 
   -webkit-box-orient: vertical;
   overflow: hidden;
   transition: all 0.3s ease;
+}
+.description-container{
+  max-width: 310px; 
+  width: 100%;
+  height: auto;
 }
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {
@@ -501,6 +518,7 @@
   .video-card {
     aspect-ratio: auto;
     min-height: 250px;
+    padding-bottom: 5px;
   }
   
   .player-header h3 {
@@ -509,5 +527,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 70%;
+  }
+  
+  .description-container{
+    max-width: 310px; 
+    width: 100%;
+    height: auto;
+  }
+  .video-player-container{
+    height: 380px;  
   }
 }

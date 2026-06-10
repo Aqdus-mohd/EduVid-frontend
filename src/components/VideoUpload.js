@@ -230,7 +230,11 @@ function VideoUpload() {
                 />
                 {/* 👉 The Live Counter */}
                 <div className="char-counter">
-                  <span style={{ color: description.length >= 150 ? "red" : "#6c757d" }}>
+                  <span
+                    style={{
+                      color: description.length >= 150 ? "red" : "#6c757d",
+                    }}
+                  >
                     {description.length}
                   </span>
                   /150 characters
@@ -239,7 +243,19 @@ function VideoUpload() {
             </div>
             {/*3: The HTML Input for the Video Thumbnail */}
             <div className="thumbnail-upload" style={{ marginTop: "15px" }}>
-              <label>Video Thumbnail (Optional):</label>
+              <label>
+                Video Thumbnail:
+                <br />
+                <span
+                  style={{
+                    fontSize: "13px",
+                    color: "#666",
+                    fontWeight: "normal",
+                  }}
+                >
+                  Recommended: 16:9 shape(1280x720)
+                </span>
+              </label>
               <input
                 type="file"
                 accept="image/*"

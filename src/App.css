@@ -1,45 +1,35 @@
 *{
-  -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
 }
-html, body {
+html, body, #root {
   margin: 0;
   padding: 0;
-  min-height: 100%;
   width: 100%;
-  overflow-x: hidden; 
+  height: 100vh !important; /* Locks exact height */
+  overflow: hidden !important; /* 🚨 KILLS THE OUTER HTML SCROLLBAR 🚨 */
   background-color: #F3F4FE;
 }
-#root {
+
+.fullpage {
   display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-}
-.fullpage{
-    /* height: 781px; */
-    background-color: #F3F4FE;
-    display: flex;
-    /* overflow-x: hidden; */
-    /* min-height: 100vh;  */
-    width: 100%;
-    flex-grow: 1;
+  width: 100%;
+  height: 100vh !important;
+  overflow: hidden !important; /* 🚨 KILLS THE INNER ROOT SCROLLBAR 🚨 */
 }
 
 .App {
   text-align: center;
 }
 
-.nav{
-    align-items: flex-end;
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    /* height: 120%; */
-    /* min-height: 100vh; */
-    width: 380px;
-    background-color: #4b44af;
-    user-select: none;  
-      
+.nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  width: 300px;
+  height: 100vh !important;
+  background-color: #4b44af;
+  flex-shrink: 0; 
 }
 
 
@@ -76,13 +66,17 @@ html, body {
     z-index: 1;
 }
 
-.content{
-  padding-top: 41px;
-  width: 100%;
-  padding-right: 40px;
-  padding-bottom: 50px;
+.content {
   flex-grow: 1;
+  height: 100vh !important;
+  overflow-y: auto !important; /* 🟢 THIS IS THE ONLY SCROLLBAR ALLOWED 🟢 */
+  
+  padding-top: 41px;
+  padding-right: 40px;
+  padding-bottom: 100px;
 }
+
+
 .icon{
   margin-right: 10px;
 }
@@ -95,7 +89,7 @@ html, body {
   color: #c0bbe7;
 }
 .upload{
-  border-radius: 30px 30px 30px 30px;
+  border-radius: 30px 30px 30px 30px !important;
   height: 43px;
   width: 100px;
   border: 3px solid #0B5E86;
@@ -205,19 +199,45 @@ html, body {
 
 
 
-
-
-
-
-
-
-
-
 @media screen and (max-width: 800px) {
-  html, body {
-    overflow-y: auto !important; 
+
+  html, body, #root, .fullpage {
     height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important; /* 👉 Gives the phone its scrollbar back! */
+    overflow-x: hidden !important;
+    display: flex;
+    flex-direction: column; /* Stacks the nav on top, content on bottom */
   }
+
+  /* 2. FIX THE NAVBAR FOR PHONES */
+  .nav {
+    width: 100% !important;
+    height: auto !important;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px 0;
+  }
+
+  /* Fix the links so they fit on the top bar */
+  .nel {
+    width: auto;
+    height: 40px;
+    margin: 0;
+    padding: 0 15px;
+    border-radius: 20px;
+  }
+  .nel-1 { margin-top: 0; }
+
+  /* 3. FIX THE CONTENT AREA */
+  .content {
+    width: 100% !important;
+    height: auto !important;
+    overflow-y: visible !important; /* Let the main body handle the scrolling */
+    padding: 15px !important;
+  }
+
   .page-title{
       display: block !important;       
       width: 100% !important;         
@@ -225,51 +245,11 @@ html, body {
       left: 0 !important;
       text-align: left !important;
     }
-  .fullpage {
-    height: auto;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    min-height: 100vh;       /* Grow to fit screen height */
-    width: 100%;
-  }
 
-  /* 2. MAKE NAV BAR HORIZONTAL */
-  .nav {
-    width: 100%;
-    height: auto;
-    flex-direction: row; /* Items side-by-side */
-    padding: 12px 0;
-    align-items: center;
-    justify-content: space-around;
-    position: relative;
-    z-index: 100;
-    padding-bottom: 0%;
-  }
-
-  .nel {
-    width: auto;
-    font-size: 14px;
-    height: 50px;
-    margin: 0;
-    padding: 0 10px;
-    padding-bottom: -2px;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
-    border-bottom-left-radius: 0px;
-  }
   .login{
     border-bottom-left-radius: 30px;
   }
   .nel-1 { margin-top: 0; }
-  /* .login { display: none; }  */
-
-  /* 3. FIX MAIN CONTENT AREA */
-  .content {
-    width: 100%;
-    padding: 15px;
-    box-sizing: border-box;
-  }
 
   /* 4. FIX HEADER / SEARCH / PROFILE */
   .searchbar {
@@ -336,7 +316,4 @@ html, body {
     height: 200px;
     object-fit: cover;
   }
-  .upload{
-        border-bottom-left-radius: 30px
-    }
 }

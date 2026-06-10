@@ -10,6 +10,24 @@
     width: 900px;
     height: 350px;
 }
+
+.upload-page-wrapper {
+    height: auto; /* 👉 Changed from 800px so it grows naturally! */
+    min-height: 800px; /* Optional: keeps it from getting too small */
+}
+
+.upheading {
+    color: #32396e;
+    font-size: 25px;
+    text-align: center;
+}
+
+.uploadForm {
+    width: 900px;
+    height: auto; /* 👉 Changed from 350px so the form isn't trapped */
+}
+
+
 .base{
     display: flex;
     justify-content: center;
@@ -46,7 +64,7 @@
 .titleInputBox{
     height: 20px;
     width: 280px;
-    font-size: larger;
+    font-size: medium;
 }
 .desInputBox{
     height: 100px;
@@ -225,7 +243,7 @@
     width: 750px;
 }
 .thumbnail-upload{
-    margin-top: 0px;
+    margin: 15px 0px 15px 0px;
 }
 .char-counter {
   text-align: right;

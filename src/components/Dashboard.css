@@ -1,6 +1,8 @@
 .Hme{
     width: 1030px;
     height: 1300px;
+    height: auto;    
+    padding-bottom: 50px;
 }
 .scoreboard{
     margin-left: 40px;
@@ -82,7 +84,7 @@
 @media screen and (max-width: 800px) {
     .Hme{
         width: 100% !important;
-        height: 800px;
+        height: auto !important;
     }
     .scoreboard{
         width: 326px;

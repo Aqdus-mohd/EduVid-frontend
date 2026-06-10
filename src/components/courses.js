@@ -185,24 +185,23 @@ function Courses() {
               ) : (
                 videos.map((video, index) => (
                   <div key={video.id} className="video-card">
-                    
                     {/* 1. THUMBNAIL (Clicking this plays the video) */}
-                    <div 
-                      className="video-thumbnail-container" 
+                    <div
+                      className="video-thumbnail-container"
                       onClick={() => setPlayingVideo(video)}
                     >
                       {video.thumbnail_url ? (
-                        <img 
-                          src={video.thumbnail_url} 
-                          alt={video.title} 
-                          className="video-thumbnail" 
+                        <img
+                          src={video.thumbnail_url}
+                          alt={video.title}
+                          className="video-thumbnail"
                         />
                       ) : (
                         <div className="video-thumbnail-fallback">
                           <i className="fa-solid fa-video"></i>
                         </div>
                       )}
-                      
+
                       <div className="play-overlay">
                         <i className="fa-solid fa-play"></i>
                       </div>
@@ -211,30 +210,16 @@ function Courses() {
                     {/* 2. TEXT AND INFO */}
                     <div className="video-card-info">
                       {/* Clicking the title also plays the video */}
-                      <h4 
-                        className="video-title clickable-title" 
+                      <h4
+                        className="video-title clickable-title"
                         onClick={() => setPlayingVideo(video)}
                         title={video.title}
                       >
                         {index + 1}. {video.title}
                       </h4>
-                      
+
                       {/* 👉 NEW: Smart Description Toggle */}
-                      <div className="description-container">
-                        <p className={`video-description ${expandedDescId === video.id ? 'expanded' : ''}`}>
-                          {video.description}
-                        </p>
-                        
-                        {/* Only show "Read More" if the description is actually long! */}
-                        {video.description && video.description.length > 80 && (
-                          <span 
-                            className="read-more-btn"
-                            onClick={() => setExpandedDescId(expandedDescId === video.id ? null : video.id)}
-                          >
-                            {expandedDescId === video.id ? "Show Less" : "Read More..."}
-                          </span>
-                        )}
-                      </div>
+                     
                     </div>
 
                     {/* THE PLAY BUTTON HAS BEEN DELETED! 🎉 */}
@@ -269,6 +254,25 @@ function Courses() {
             >
               Your browser does not support HTML video.
             </video>
+
+            {playingVideo.description && (
+              <div
+                className="player-description-box"
+                style={{
+                  padding: "10px",
+                  color: "white",
+                  backgroundColor: "#111",
+                  height: "100%",
+                }}
+              >
+                <h4 style={{ margin: "0 0 10px 0", color: "#ccc" }}>
+                  About this video
+                </h4>
+                <p style={{ margin: 0, lineHeight: "1.6", color: "#eee" , height: "100%", wordWrap: "break-word"}}>
+                  {playingVideo.description}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

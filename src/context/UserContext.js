@@ -3,7 +3,6 @@ import { createContext, useState, useEffect } from "react";
 const UserContext = createContext({});
 
 export function UserContextProvider({ children }) {
-  // const [userInfo, setUserInfo] = useState(null);
 
   const [userInfo, setUserInfo] = useState(() => {
     const savedUser = localStorage.getItem('userInfo');
