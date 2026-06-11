@@ -25,6 +25,8 @@ function Courses() {
   );
   const [expandedDescId, setExpandedDescId] = useState(null);
 
+  const [activeMenuId, setActiveMenuId] = useState(null);
+
   useEffect(() => {
     fetchAllCourses();
   }, []);
@@ -109,6 +111,50 @@ function Courses() {
 
   if (loading) return <div className="loading-text">Loading courses...</div>;
 
+
+// Update and delete
+  // 2. Toggle the menu when three-dots are clicked
+  const toggleMenu = (e, videoId) => {
+    e.stopPropagation(); // Prevents clicking the dots from playing the video!
+    setActiveMenuId(activeMenuId === videoId ? null : videoId);
+  };
+
+  // 3. Frontend Delete 
+  const handleDeleteClick = async (e, videoId) => {
+    e.stopPropagation(); // Stops video player from opening
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this video?",
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      // Frontend API call to backend (we will write backend code next)
+      await axios.delete(
+        `https://eduvid-backend-zfkv.onrender.com/api/upload/${videoId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      // Refresh your videos list instantly on screen after deleting
+      setVideos(videos.filter((video) => video.id !== videoId));
+      setActiveMenuId(null);
+      alert("Video deleted successfully!");
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Failed to delete video.");
+    }
+  };
+
+  // 4. Frontend Update 
+  const handleUpdateClick = (e, video) => {
+    e.stopPropagation(); // Stops video player from opening
+    setActiveMenuId(null);
+    alert(`Update option clicked for: ${video.title}`);
+    // Your edit modal logic will go here
+  };
+
   return (
     <div className="courses-page-wrapper">
       {!userInfo && (
@@ -183,9 +229,64 @@ function Courses() {
               {videos.length === 0 ? (
                 <p>No videos uploaded to this course yet.</p>
               ) : (
+                /* MINIMUM CHANGE FIX HERE: Removed the extra outer curly braces around the map */
                 videos.map((video, index) => (
                   <div key={video.id} className="video-card">
-                    {/* 1. THUMBNAIL (Clicking this plays the video) */}
+
+                    
+
+                    {/* 🚨 THE SECURE THREE-DOT MENU (ONLY TEACHERS SEE THIS) 🚨 */}
+                        {userInfo?.role === "teacher" && (
+                          <div className="menu-container">
+
+
+                            <div className="video-card-info" style={{ position: "relative" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        
+                        {/* Video Title */}
+                        <h4
+                          className="video-title clickable-title"
+                          onClick={() => setPlayingVideo(video)}
+                          title={video.title}
+                           // Leaves clean space for the dots
+                        >
+                          {index + 1}. {video.title}
+                        </h4>
+
+                        
+
+                      </div>
+                    </div>
+
+                    
+                            <button 
+                              className="three-dots-btn" 
+                              onClick={(e) => toggleMenu(e, video.id)}
+                            >
+                              <i className="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+
+                            {/* The Dropdown Options Box */}
+                            {activeMenuId === video.id && (
+                              <div className="dropdown-options-menu">
+                                <div 
+                                  className="dropdown-item edit-opt" 
+                                  onClick={(e) => handleUpdateClick(e, video)}
+                                >
+                                  <i className="fa-solid fa-pen"></i> Edit
+                                </div>
+                                <div 
+                                  className="dropdown-item delete-opt" 
+                                  onClick={(e) => handleDeleteClick(e, video.id)}
+                                >
+                                  <i className="fa-solid fa-trash"></i> Delete
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                    
+                    {/* 1. THUMBNAIL */}
                     <div
                       className="video-thumbnail-container"
                       onClick={() => setPlayingVideo(video)}
@@ -207,22 +308,9 @@ function Courses() {
                       </div>
                     </div>
 
-                    {/* 2. TEXT AND INFO */}
-                    <div className="video-card-info">
-                      {/* Clicking the title also plays the video */}
-                      <h4
-                        className="video-title clickable-title"
-                        onClick={() => setPlayingVideo(video)}
-                        title={video.title}
-                      >
-                        {index + 1}. {video.title}
-                      </h4>
+                    {/* 2. TEXT AND OPTIONS CONTAINER */}
+                    
 
-                      {/* 👉 NEW: Smart Description Toggle */}
-                     
-                    </div>
-
-                    {/* THE PLAY BUTTON HAS BEEN DELETED! 🎉 */}
                   </div>
                 ))
               )}
@@ -268,7 +356,15 @@ function Courses() {
                 <h4 style={{ margin: "0 0 10px 0", color: "#ccc" }}>
                   About this video
                 </h4>
-                <p style={{ margin: 0, lineHeight: "1.6", color: "#eee" , height: "100%", wordWrap: "break-word"}}>
+                <p
+                  style={{
+                    margin: 0,
+                    lineHeight: "1.6",
+                    color: "#eee",
+                    height: "100%",
+                    wordWrap: "break-word",
+                  }}
+                >
                   {playingVideo.description}
                 </p>
               </div>

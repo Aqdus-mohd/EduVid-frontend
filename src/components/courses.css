@@ -2,6 +2,20 @@
   box-sizing: border-box;
 }
 
+.video-card,
+.video-thumbnail-container,
+.three-dots-btn,
+.dropdown-item {
+  /* 1. Removes the default blue/grey tap flash on mobile and tablets */
+  -webkit-tap-highlight-color: transparent !important;
+  
+  /* 2. Removes blue outline borders that appear on click/focus */
+  outline: none !important;
+  
+  /* 3. Prevents the text from turning blue or getting highlighted if clicked fast */
+  user-select: none !important; 
+}
+
 .courses-page-wrapper {
   width: 100%;
   padding: 20px;
@@ -127,7 +141,7 @@
   aspect-ratio: 1 / 1; /* FORCES A PERFECT SQUARE! */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
 }
 
 .video-card:hover {
@@ -298,6 +312,7 @@
   border: 1px solid #eee;
   height: auto;
   aspect-ratio: auto;
+  padding-top: 0px;
 }
 
 .video-card:hover {
@@ -446,6 +461,7 @@
   padding: 16px 20px;
   padding-bottom: 0%; /* 👉 Increased left/right padding for a better boundary */
   flex-grow: 2; 
+  padding-left: 0%;
 }
 
 .video-description {
@@ -470,6 +486,107 @@
   width: 100%;
   height: auto;
 }
+
+/* =========================================
+   BEAUTIFUL ANIMATED DROPDOWN MENU
+   ========================================= */
+
+/* 1. The container holding the dots and menu */
+.menu-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* 2. The Three-Dots Button */
+.three-dots-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  position: inherit;
+  left: 15px;
+  top: 5px;
+}
+
+/* .three-dots-btn:hover {
+  background: #e9ecef; 
+  color: #000;
+} */
+
+/* 3. The Dropdown Box Animation Setup */
+@keyframes dropdownReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95); /* Starts slightly higher and smaller */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1); /* Smoothly lands in place */
+  }
+}
+/* Three Dots */
+/* 4. The Dropdown Box Layout */
+.dropdown-options-menu {
+  position: absolute;
+  right: 0;
+  top: 36px;
+  
+  /* 👉 PREMIUM GREYISH BACKGROUNDS */
+  background: #f1f3f5; 
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+  
+  /* 👉 MAX Z-INDEX (Floating on top of video grids completely) */
+  z-index: 99999 !important; 
+  
+  width: 120px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  
+  /* 👉 SMOOTH GRADUAL ANMATION */
+  animation: dropdownReveal 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top right; /* Animates outward from the dot icon */
+}
+
+/* 5. Dropdown Menu Links/Options */
+.dropdown-item {
+  padding: 11px 16px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #495057;
+  transition: all 0.15s ease;
+}
+
+/* Hover state inside the greyish menu */
+.dropdown-item:hover {
+  background: #e2e6ea; /* Darker grey when you slide mouse over it */
+  color: #212529;
+}
+
+.dropdown-item.edit-opt:hover {
+  color: #0d6efd; /* Highlight text blue for edit */
+}
+
+.dropdown-item.delete-opt {
+  color: #dc3545; /* Crimson red warning text for delete */
+}
+
+.dropdown-item.delete-opt:hover {
+  background: #ffe3e3; /* Soft red hover for safety warning */
+}
+
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {
 
@@ -516,7 +633,7 @@
   
   .video-card {
     aspect-ratio: auto;
-    min-height: 250px;
+    min-height: 230px;
     padding-bottom: 5px;
   }
   
