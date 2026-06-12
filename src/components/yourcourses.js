@@ -500,7 +500,7 @@ function MyCourses() {
         </div>
       )}
 
-      //END
+
     </div>
   );
 }
