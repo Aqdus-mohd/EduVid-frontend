@@ -2,11 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { useSearchParams, Link } from "react-router-dom";
 import UserContext from "../context/UserContext";
-import "./courses.css"; 
+import "./courses.css";
+import toast from "react-hot-toast";
 
 function MyCourses() {
   const { userInfo } = useContext(UserContext);
-  
+
   const isTeacher = userInfo && userInfo.role === "teacher";
 
   const [courses, setCourses] = useState([]);
@@ -17,11 +18,13 @@ function MyCourses() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedCourseId = searchParams.get("course");
 
+  const [activeMenuId, setActiveMenuId] = useState(null);
+  const [videoToDelete, setVideoToDelete] = useState(null);
+
   const selectedCourse = courses.find(
-    (c) => c.id.toString() === selectedCourseId
+    (c) => c.id.toString() === selectedCourseId,
   );
 
- 
   useEffect(() => {
     if (userInfo?.id && isTeacher) {
       fetchMyCourses(userInfo.id);
@@ -49,7 +52,7 @@ function MyCourses() {
         `https://eduvid-backend-zfkv.onrender.com/api/courses?userId=${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       setCourses(res.data);
       setLoading(false);
@@ -67,7 +70,7 @@ function MyCourses() {
         `https://eduvid-backend-zfkv.onrender.com/api/upload/course/${courseId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       setVideos(res.data);
     } catch (err) {
@@ -85,34 +88,93 @@ function MyCourses() {
   };
 
   // 1. Show Loading Text while API runs
-  if (loading) return <div className="loading-text">Loading your dashboard...</div>;
+  if (loading)
+    return <div className="loading-text">Loading your dashboard...</div>;
 
   // 2. 🛑 ACCESS DENIED VIEW: If a student tries to hack or type the URL manually
   if (!isTeacher) {
     return (
-      <div className="courses-page-wrapper" style={{ textAlign: "center", marginTop: "100px" }}>
+      <div
+        className="courses-page-wrapper"
+        style={{ textAlign: "center", marginTop: "100px" }}
+      >
         <h2 style={{ color: "#ff4d4d" }}>🔒 Access Denied</h2>
         <p style={{ fontSize: "18px", color: "#32396e" }}>
-          This area is restricted to instructors only. Please log in with a Teacher account to manage your contents.
+          This area is restricted to instructors only. Please log in with a
+          Teacher account to manage your contents.
         </p>
-        <Link to="/Login" className="video-play-btn" style={{ display: "inline-block", textDecoration: "none", marginTop: "15px" }}>
+        <Link
+          to="/Login"
+          className="video-play-btn"
+          style={{
+            display: "inline-block",
+            textDecoration: "none",
+            marginTop: "15px",
+          }}
+        >
           Go to Login
         </Link>
       </div>
     );
   }
 
+  const toggleMenu = (e, videoId) => {
+    e.stopPropagation(); // Prevents clicking the dots from playing the video!
+    setActiveMenuId(activeMenuId === videoId ? null : videoId);
+  };
+
+  // 3. Frontend Delete
+  const handleDeleteClick = (e, videoId) => {
+    e.stopPropagation(); // Stops video player from opening
+    setVideoToDelete(videoId); // Triggers the modal to open
+    setActiveMenuId(null); // Closes the three-dot dropdown menu
+  };
+
+  // 2. This function executes the real API call when you click "Delete" inside the modal
+  const confirmDeleteVideo = async () => {
+    if (!videoToDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `https://eduvid-backend-zfkv.onrender.com/api/upload/${videoToDelete}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      // Refresh your videos list instantly on screen after deleting
+      setVideos(videos.filter((video) => video.id !== videoToDelete));
+      toast.success("Video deleted successfully!");
+    } catch (err) {
+      console.error("Delete failed:", err);
+      toast.error("Failed to delete video.");
+    } finally {
+      setVideoToDelete(null); // Closes the modal smoothly at the end
+    }
+  };
+
+  // 4. Frontend Update
+  const handleUpdateClick = (e, video) => {
+    e.stopPropagation(); // Stops video player from opening
+    setActiveMenuId(null);
+    alert(`Update option clicked for: ${video.title}`);
+    // Your edit modal logic will go here
+  };
+
   // 3. ✅ TEACHER AREA (Only authorized teachers reach this line)
   return (
     <div className="courses-page-wrapper">
-      
       {/* --- VIEW 1: LIST MY PRIVATE COURSES --- */}
       {!selectedCourse ? (
         <>
           <h2 className="courses-heading">My Uploaded Courses</h2>
           <div className="public-course-grid">
             {courses.length === 0 ? (
-              <p>You haven't created any courses yet! Use the Upload tab to add your first course.</p>
+              <p>
+                You haven't created any courses yet! Use the Upload tab to add
+                your first course.
+              </p>
             ) : null}
 
             {courses.map((course) => (
@@ -158,7 +220,59 @@ function MyCourses() {
             ) : (
               videos.map((video, index) => (
                 <div key={video.id} className="video-card">
-                  
+                  {/* 🚨 THE SECURE THREE-DOT MENU (ONLY TEACHERS SEE THIS) 🚨 */}
+                  {userInfo?.role === "teacher" && (
+                    <div className="menu-container">
+                      <div
+                        className="video-card-info"
+                        style={{ position: "relative" }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          {/* Video Title */}
+                          <h4
+                            className="video-title clickable-title"
+                            onClick={() => setPlayingVideo(video)}
+                            title={video.title}
+                            // Leaves clean space for the dots
+                          >
+                            {index + 1}. {video.title}
+                          </h4>
+                        </div>
+                      </div>
+
+                      <button
+                        className="three-dots-btn"
+                        onClick={(e) => toggleMenu(e, video.id)}
+                      >
+                        <i className="fa-solid fa-ellipsis-vertical"></i>
+                      </button>
+
+                      {/* The Dropdown Options Box */}
+                      {activeMenuId === video.id && (
+                        <div className="dropdown-options-menu">
+                          <div
+                            className="dropdown-item edit-opt"
+                            onClick={(e) => handleUpdateClick(e, video)}
+                          >
+                            <i className="fa-solid fa-pen"></i> Edit
+                          </div>
+                          <div
+                            className="dropdown-item delete-opt"
+                            onClick={(e) => handleDeleteClick(e, video.id)}
+                          >
+                            <i className="fa-solid fa-trash"></i> Delete
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Thumbnail Container */}
                   <div
                     className="video-thumbnail-container"
@@ -235,11 +349,50 @@ function MyCourses() {
                 <h4 style={{ margin: "0 0 10px 0", color: "#ccc" }}>
                   About this video
                 </h4>
-                <p style={{ margin: 0, lineHeight: "1.6", color: "#eee", wordWrap: "break-word" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    lineHeight: "1.6",
+                    color: "#eee",
+                    wordWrap: "break-word",
+                  }}
+                >
                   {playingVideo.description}
                 </p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+      {/* delete modal */}
+      {videoToDelete && (
+        <div
+          className="modal-blur-overlay"
+          onClick={() => setVideoToDelete(null)}
+        >
+          <div
+            className="custom-confirm-box"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-warn-icon">
+              <i className="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>Are you sure?</h3>
+            <p>
+              Do you really want to delete this video? This action cannot be
+              undone.
+            </p>
+            <div className="modal-buttons-row">
+              <button
+                className="modal-btn-cancel"
+                onClick={() => setVideoToDelete(null)}
+              >
+                Cancel
+              </button>
+              <button className="modal-btn-danger" onClick={confirmDeleteVideo}>
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
