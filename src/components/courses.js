@@ -235,7 +235,7 @@ function Courses() {
 
                     
 
-                    {/* 🚨 THE SECURE THREE-DOT MENU (ONLY TEACHERS SEE THIS) 🚨 */}
+                    {/*THE SECURE THREE-DOT MENU (ONLY TEACHERS SEE THIS) */}
                         {userInfo?.role === "teacher" && (
                           <div className="menu-container">
 
@@ -259,12 +259,12 @@ function Courses() {
                     </div>
 
                     
-                            <button 
+                            {/* <button 
                               className="three-dots-btn" 
                               onClick={(e) => toggleMenu(e, video.id)}
                             >
                               <i className="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
+                            </button> */}
 
                             {/* The Dropdown Options Box */}
                             {activeMenuId === video.id && (

@@ -19,7 +19,13 @@ function MyCourses() {
   const selectedCourseId = searchParams.get("course");
 
   const [activeMenuId, setActiveMenuId] = useState(null);
+  //state for deleting
   const [videoToDelete, setVideoToDelete] = useState(null);
+  // State for the editing modal
+  const [videoToUpdate, setVideoToUpdate] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editThumbnailUrl, setEditThumbnailUrl] = useState("");
 
   const selectedCourse = courses.find(
     (c) => c.id.toString() === selectedCourseId,
@@ -122,8 +128,8 @@ function MyCourses() {
     e.stopPropagation(); // Prevents clicking the dots from playing the video!
     setActiveMenuId(activeMenuId === videoId ? null : videoId);
   };
-
-  // 3. Frontend Delete
+  //DELETE
+  // 1. Frontend Delete
   const handleDeleteClick = (e, videoId) => {
     e.stopPropagation(); // Stops video player from opening
     setVideoToDelete(videoId); // Triggers the modal to open
@@ -153,13 +159,50 @@ function MyCourses() {
       setVideoToDelete(null); // Closes the modal smoothly at the end
     }
   };
-
-  // 4. Frontend Update
+  //EDIT
+  // 1. Opens the Edit Modal and clears input fields
   const handleUpdateClick = (e, video) => {
     e.stopPropagation(); // Stops video player from opening
-    setActiveMenuId(null);
-    alert(`Update option clicked for: ${video.title}`);
-    // Your edit modal logic will go here
+    setVideoToUpdate(video);
+    setEditTitle("");
+    setEditDescription("");
+    setEditThumbnailUrl("");
+    setActiveMenuId(null); // Closes the three-dot menu
+  };
+
+  // 2. Sends the updated fields to your backend
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!videoToUpdate) return;
+
+    //  If a field is empty, use the original data so it remains unchanged!
+    const updatedData = {
+      title: editTitle.trim() !== "" ? editTitle.trim() : videoToUpdate.title,
+      description: editDescription.trim() !== "" ? editDescription.trim() : videoToUpdate.description,
+      thumbnail_url: editThumbnailUrl.trim() !== "" ? editThumbnailUrl.trim() : videoToUpdate.thumbnail_url,
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `https://eduvid-backend-zfkv.onrender.com/api/upload/${videoToUpdate.id}`,
+        updatedData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      // Refresh frontend state list instantly with updated values
+      setVideos(
+        videos.map((v) => (v.id === videoToUpdate.id ? { ...v, ...updatedData } : v))
+      );
+      
+      toast.success("Video updated successfully!");
+      setVideoToUpdate(null); // Close Modal
+    } catch (err) {
+      console.error("Update failed:", err);
+      toast.error("Failed to update video.");
+    }
   };
 
   // 3. ✅ TEACHER AREA (Only authorized teachers reach this line)
@@ -396,6 +439,68 @@ function MyCourses() {
           </div>
         </div>
       )}
+
+      {/*  EDIT / UPDATE MODAL*/}
+      {videoToUpdate && (
+        <div className="modal-blur-overlay" onClick={() => setVideoToUpdate(null)}>
+          <div className="custom-edit-box" onClick={(e) => e.stopPropagation()}>
+            
+            <div className="edit-modal-header">
+              <h3>⚙️ Edit Video Details</h3>
+              <button className="edit-modal-close" onClick={() => setVideoToUpdate(null)}>✖</button>
+            </div>
+
+            {/* Clear Requirement Note */}
+            <div className="edit-modal-note">
+              📌 <strong>Note:</strong> Leave a field completely empty if you want it to remain unchanged.
+            </div>
+
+            <form onSubmit={handleEditSubmit} className="edit-modal-form">
+              <div className="form-group-edit">
+                <label>New Video Title</label>
+                <input
+                  type="text"
+                  placeholder={`Current: ${videoToUpdate.title}`}
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group-edit">
+                <label>New Thumbnail URL</label>
+                <input
+                  type="text"
+                  placeholder="Paste new image URL link here..."
+                  value={editThumbnailUrl}
+                  onChange={(e) => setEditThumbnailUrl(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group-edit">
+                <label>New Description</label>
+                <textarea
+                  rows="4"
+                  placeholder="Type new video description text..."
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                />
+              </div>
+
+              <div className="edit-modal-actions">
+                <button type="button" className="edit-btn-cancel" onClick={() => setVideoToUpdate(null)}>
+                  Cancel
+                </button>
+                <button type="submit" className="edit-btn-save">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      //END
     </div>
   );
 }
