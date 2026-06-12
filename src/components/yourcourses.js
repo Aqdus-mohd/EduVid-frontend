@@ -211,12 +211,10 @@ function MyCourses() {
 
       // Assuming your backend returns the final updated video object data (including new image link)
       const updatedVideoData = res.data.video || {
+        ...videoToUpdate,//This keeps video_url, course_id, and everything else safe
         id: videoToUpdate.id,
         title: editTitle.trim() !== "" ? editTitle.trim() : videoToUpdate.title,
-        description:
-          editDescription.trim() !== ""
-            ? editDescription.trim()
-            : videoToUpdate.description,
+        description:  editDescription.trim() !== ""  ? editDescription.trim()  : videoToUpdate.description,
         thumbnail_url: res.data.thumbnail_url || videoToUpdate.thumbnail_url,
       };
 
