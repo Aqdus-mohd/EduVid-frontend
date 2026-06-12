@@ -25,7 +25,7 @@ function MyCourses() {
   const [videoToUpdate, setVideoToUpdate] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
-  const [editThumbnailUrl, setEditThumbnailUrl] = useState("");
+  const [editThumbnailFile, setEditThumbnailFile] = useState(null);
 
   const selectedCourse = courses.find(
     (c) => c.id.toString() === selectedCourseId,
@@ -166,7 +166,7 @@ function MyCourses() {
     setVideoToUpdate(video);
     setEditTitle("");
     setEditDescription("");
-    setEditThumbnailUrl("");
+    setEditThumbnailFile(null);
     setActiveMenuId(null); // Closes the three-dot menu
   };
 
@@ -175,37 +175,63 @@ function MyCourses() {
     e.preventDefault();
     if (!videoToUpdate) return;
 
-    //  If a field is empty, use the original data so it remains unchanged!
-    const updatedData = {
-      title: editTitle.trim() !== "" ? editTitle.trim() : videoToUpdate.title,
-      description: editDescription.trim() !== "" ? editDescription.trim() : videoToUpdate.description,
-      thumbnail_url: editThumbnailUrl.trim() !== "" ? editThumbnailUrl.trim() : videoToUpdate.thumbnail_url,
-    };
+    //  Create a FormData container
+    const formData = new FormData();
+
+    // If text fields are left blank, append original text values
+    formData.append(
+      "title",
+      editTitle.trim() !== "" ? editTitle.trim() : videoToUpdate.title,
+    );
+    formData.append(
+      "description",
+      editDescription.trim() !== ""
+        ? editDescription.trim()
+        : videoToUpdate.description,
+    );
+
+    // Only append a file if the teacher actually selected a new one!
+    if (editThumbnailFile) {
+      formData.append("thumbnail", editThumbnailFile); // Matches your backend field name
+    }
 
     try {
       const token = localStorage.getItem("token");
-      await axios.put(
+
+      const res = await axios.put(
         `https://eduvid-backend-zfkv.onrender.com/api/upload/${videoToUpdate.id}`,
-        updatedData,
+        formData,
         {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data", // 🚨 MANDATORY FOR FILES
+          },
+        },
       );
 
-      // Refresh frontend state list instantly with updated values
+      // Assuming your backend returns the final updated video object data (including new image link)
+      const updatedVideoData = res.data.video || {
+        id: videoToUpdate.id,
+        title: editTitle.trim() !== "" ? editTitle.trim() : videoToUpdate.title,
+        description:
+          editDescription.trim() !== ""
+            ? editDescription.trim()
+            : videoToUpdate.description,
+        thumbnail_url: res.data.thumbnail_url || videoToUpdate.thumbnail_url,
+      };
+
       setVideos(
-        videos.map((v) => (v.id === videoToUpdate.id ? { ...v, ...updatedData } : v))
+        videos.map((v) => (v.id === videoToUpdate.id ? updatedVideoData : v)),
       );
-      
       toast.success("Video updated successfully!");
-      setVideoToUpdate(null); // Close Modal
+      setVideoToUpdate(null);
     } catch (err) {
       console.error("Update failed:", err);
       toast.error("Failed to update video.");
     }
   };
 
-  // 3. ✅ TEACHER AREA (Only authorized teachers reach this line)
+  // TEACHER AREA (Only authorized teachers reach this line)
   return (
     <div className="courses-page-wrapper">
       {/* --- VIEW 1: LIST MY PRIVATE COURSES --- */}
@@ -442,17 +468,25 @@ function MyCourses() {
 
       {/*  EDIT / UPDATE MODAL*/}
       {videoToUpdate && (
-        <div className="modal-blur-overlay" onClick={() => setVideoToUpdate(null)}>
+        <div
+          className="modal-blur-overlay"
+          onClick={() => setVideoToUpdate(null)}
+        >
           <div className="custom-edit-box" onClick={(e) => e.stopPropagation()}>
-            
             <div className="edit-modal-header">
               <h3>⚙️ Edit Video Details</h3>
-              <button className="edit-modal-close" onClick={() => setVideoToUpdate(null)}>✖</button>
+              <button
+                className="edit-modal-close"
+                onClick={() => setVideoToUpdate(null)}
+              >
+                ✖
+              </button>
             </div>
 
             {/* Clear Requirement Note */}
             <div className="edit-modal-note">
-              📌 <strong>Note:</strong> Leave a field completely empty if you want it to remain unchanged.
+              📌 <strong>Note:</strong> Leave a field completely empty if you
+              want it to remain unchanged.
             </div>
 
             <form onSubmit={handleEditSubmit} className="edit-modal-form">
@@ -467,12 +501,11 @@ function MyCourses() {
               </div>
 
               <div className="form-group-edit">
-                <label>New Thumbnail URL</label>
+                <label>New Thumbnail File</label>
                 <input
-                  type="text"
-                  placeholder="Paste new image URL link here..."
-                  value={editThumbnailUrl}
-                  onChange={(e) => setEditThumbnailUrl(e.target.value)}
+                  type="file"
+                  accept="image/*" // Restricts picker to image files only
+                  onChange={(e) => setEditThumbnailFile(e.target.files[0])} // Captures raw file binary
                 />
               </div>
 
@@ -487,7 +520,11 @@ function MyCourses() {
               </div>
 
               <div className="edit-modal-actions">
-                <button type="button" className="edit-btn-cancel" onClick={() => setVideoToUpdate(null)}>
+                <button
+                  type="button"
+                  className="edit-btn-cancel"
+                  onClick={() => setVideoToUpdate(null)}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="edit-btn-save">
@@ -495,12 +532,9 @@ function MyCourses() {
                 </button>
               </div>
             </form>
-
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
