@@ -55,6 +55,7 @@ function VideoUpload() {
     formData.append("thumbnail", newCourseThumb);
 
     const token = localStorage.getItem("token"); // Grab token
+    setShowModal(false);
 
     const createcoursepromise = axios.post(
       "https://eduvid-backend-zfkv.onrender.com/api/courses",
@@ -66,10 +67,20 @@ function VideoUpload() {
     toast.promise(createcoursepromise, {
       loading: "Creating course, please wait...",
       success: (res) => {
-        // res.data is the Axios response
-        setCourses([res.data.data, ...courses]);
-        setSelectedCourseId(res.data.data.id);
-        setShowModal(false);
+        // This line checks if your backend data is inside 'res.data.data' or in 'res.data'
+        const baseData = res.data?.data || res.data;
+
+        // Construct a safe fallback object so React never encounters 'undefined' properties
+        const savedCourse = {
+          id: baseData?.id || baseData?.insertId || Date.now(), 
+          title: baseData?.title || newCourseTitle,
+          thumbnail_url: baseData?.thumbnail_url || "https://via.placeholder.com/150"
+        };
+
+        // Update states smoothly using the safe object
+        setCourses([savedCourse, ...courses]);
+        
+        // Clear out input fields for next time
         setNewCourseTitle("");
         setNewCourseThumb(null);
         return "New Course Created!";
