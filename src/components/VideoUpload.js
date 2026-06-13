@@ -212,84 +212,87 @@ function VideoUpload() {
         </div>
       )}
 
+      {/* ========================================================
+          EVERYTHING BELOW THE DIVIDER (USING ORIGINAL CLASSES)
+          ======================================================== */}
       <hr className="divider" />
 
       <h2 className="upheading">Fill Video Details</h2>
 
-      {/* --- VIDEO FORM (Only enables if course is selected) --- */}
       <div className={`uploadForm ${!selectedCourseId ? "dimmed" : ""}`}>
         <form onSubmit={handleVideoUpload}>
+          
+          {/* Main container holding inputs and the video dropzone side-by-side */}
           <div className="fillInfo">
+            
+            {/* Left side: Title, Description, and Thumbnail fields */}
             <div className="info">
+              
               <div className="title">
-                <label>Video Title:</label>
+                <label style={{ fontWeight: "600", color: "#32396e" }}>Video Title:</label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
                   className="titleInputBox"
+                  placeholder="Enter video title..."
                 />
               </div>
+
               <div className="description">
-                <label>Description:</label>
+                <label style={{ fontWeight: "600", color: "#32396e" }}>Description:</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="desInputBox"
-                  maxLength={150} /* 👉 Stops them from typing past 150! */
+                  placeholder="Enter video description..."
+                  maxLength={150}
                 />
-                {/* 👉 The Live Counter */}
                 <div className="char-counter">
-                  <span
-                    style={{
-                      color: description.length >= 150 ? "red" : "#6c757d",
-                    }}
-                  >
+                  <span style={{ color: description.length >= 150 ? "red" : "#6c757d" }}>
                     {description.length}
                   </span>
                   /150 characters
                 </div>
               </div>
+
+              {/* Redesigned Thumbnail Section */}
+              <div className="thumbnail-upload">
+                <label style={{ fontWeight: "600", color: "#32396e" }}>
+                  Video Thumbnail: <span style={{ fontSize: "12px", color: "#666", fontWeight: "normal" }}>(Recommended 16:9)</span>
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setVideoThumbnail(e.target.files[0])}
+                  className="titleInputBox" /* Keeps same style as text input */
+                />
+              </div>
+
             </div>
-            {/*3: The HTML Input for the Video Thumbnail */}
-            <div className="thumbnail-upload" style={{ marginTop: "15px" }}>
-              <label>
-                Video Thumbnail:
-                <br />
-                <span
-                  style={{
-                    fontSize: "13px",
-                    color: "#666",
-                    fontWeight: "normal",
-                  }}
-                >
-                  Recommended: 16:9 shape(1280x720)
-                </span>
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setVideoThumbnail(e.target.files[0])}
-                className="titleInputBox"
-              />
-            </div>
+
+            {/* Right side: The Video Dropzone box */}
             <div className="dropbox">
               <FileDropzone
                 onFileDropped={handleFileDrop}
                 videoPreviewUrl={videoPreviewUrl}
               />
             </div>
+
           </div>
 
+          {/* Bottom Row: Control Buttons */}
           <div className="submit">
             <button
               className="remove-btn"
               type="button"
               onClick={handleRemoveFile}
+              disabled={!file}
             >
               Remove Video
             </button>
+            
             <button
               className="upload-btn"
               type="submit"
@@ -298,6 +301,7 @@ function VideoUpload() {
               {selectedCourseId ? "Upload Video" : "Select Course"}
             </button>
           </div>
+
         </form>
       </div>
     </div>
