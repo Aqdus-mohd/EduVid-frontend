@@ -367,16 +367,7 @@ function MyCourses() {
                     </div>
                   </div>
 
-                  {/* Video Title */}
-                  <div className="video-card-info">
-                    <h4
-                      className="video-title clickable-title"
-                      onClick={() => setPlayingVideo(video)}
-                      title={video.title}
-                    >
-                      {index + 1}. {video.title}
-                    </h4>
-                  </div>
+                  
                 </div>
               ))
             )}
