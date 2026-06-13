@@ -26,6 +26,7 @@ function MyCourses() {
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editThumbnailFile, setEditThumbnailFile] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const selectedCourse = courses.find(
     (c) => c.id.toString() === selectedCourseId,
@@ -95,7 +96,7 @@ function MyCourses() {
 
   // 1. Show Loading Text while API runs
   if (loading)
-    return <div className="loading-text">Loading your dashboard...</div>;
+    return <div className="loading-text">Loading your courses...</div>;
 
   // 2. 🛑 ACCESS DENIED VIEW: If a student tries to hack or type the URL manually
   if (!isTeacher) {
@@ -174,7 +175,8 @@ function MyCourses() {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     if (!videoToUpdate) return;
-
+    //loading
+    setIsUpdating(true);
     //  Create a FormData container
     const formData = new FormData();
 
@@ -204,7 +206,7 @@ function MyCourses() {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", // 🚨 MANDATORY FOR FILES
+            "Content-Type": "multipart/form-data", // MANDATORY FOR FILES
           },
         },
       );
@@ -226,6 +228,9 @@ function MyCourses() {
     } catch (err) {
       console.error("Update failed:", err);
       toast.error("Failed to update video.");
+    }
+    finally{
+      setIsUpdating(false);
     }
   };
 
@@ -525,8 +530,8 @@ function MyCourses() {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="edit-btn-save">
-                  Save Changes
+                <button type="submit" className="edit-btn-save" disabled={isUpdating}>
+                  {isUpdating ? <span className="btn-spinner"></span> : "Save Changes"}
                 </button>
               </div>
             </form>
