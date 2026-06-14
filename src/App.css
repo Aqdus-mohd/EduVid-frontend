@@ -1,5 +1,7 @@
 *{
   box-sizing: border-box;
+  user-select: none !important; 
+  -webkit-tap-highlight-color: transparent !important;
 }
 html, body, #root {
   margin: 0;
@@ -61,7 +63,7 @@ html, body, #root {
     margin-left: -80px;
     border-radius: 30px 30px 30px 30px;
     height: 43px;
-    width: 140px;
+    width: 120px;
     padding-bottom: 5px;
     z-index: 1;
 }
@@ -78,7 +80,7 @@ html, body, #root {
 
 
 .icon{
-  margin-right: 10px;
+  margin-right: 5px;
 }
 .setwhite{
   background-color: #F3F4FE;
@@ -247,7 +249,10 @@ html, body, #root {
     }
 
   .login{
-    border-bottom-left-radius: 30px;
+    border-radius: 30px 30px 30px 30px;
+  }
+  .label{
+    width: 50px !important;
   }
   .nel-1 { margin-top: 0; }
 

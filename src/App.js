@@ -263,7 +263,7 @@ function AppContent() {
                 <span className="icon">
                   <i className="fa-solid fa-plus"></i>
                 </span>
-                <span className="label">Log in</span>
+                <span className="label logintxt">Log in</span>
               </Link>
             )}
 
