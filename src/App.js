@@ -259,7 +259,9 @@ function AppContent() {
 
             {/* login */}
             {!isLoggedIn && (
-              <Link to="/Login" className="nel login">
+              <Link to="/Login"
+              state={{ from: location.pathname }}
+              className="nel login">
                 <span className="icon">
                   <i className="fa-solid fa-plus"></i>
                 </span>

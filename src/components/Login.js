@@ -1,6 +1,6 @@
 import "./Login.css";
 import React, { useState, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom"; // Removed unused useFetcher
+import { useNavigate, useLocation } from "react-router-dom"; 
 import axios from "axios";
 import UserContext from "../context/UserContext";
 import toast from "react-hot-toast";
@@ -22,12 +22,12 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
   const passKeyRef = useRef(null); // NEW: Separate ref for passKey
   const navigate = useNavigate();
   const { setUserInfo } = useContext(UserContext);
+  const location = useLocation();
 
   const submitting = async (e) => {
     e.preventDefault();
     setLoading(true);
     const toastId = toast.loading("Processing...");
-    // Determine role only if registering
     const role = !isOn && isTeacher ? "teacher" : "student";
 
     // Construct payload dynamically based on whether it's login or register
@@ -72,14 +72,20 @@ export default function Login({ setactivenav, setIsLoggedIn }) {
           role: res.data.user.role,
         };
         localStorage.setItem("userInfo", JSON.stringify(userData));
+        const destination = location.state?.from || "/";
 
-        setactivenav("dashboard");
+        if (destination.includes("yourcourses")) {
+          setactivenav?.("yourcourses"); 
+        } else if (destination.includes("courses")) {
+          setactivenav?.("courses"); 
+        } else {
+          setactivenav?.("dashboard");
+        }
         setIsLoggedIn(true);
-
-        // IMPORTANT: Update context with the entire user object
+        //  Update context with the entire user object
         setUserInfo(userData);
-
-        navigate("/");
+        navigate(destination);
+        
       } else if (msg === "successfully registered") {
         toast.success("Account created! Please log in.", { id: toastId });
         setIsOn(true); // Switch to login screen
