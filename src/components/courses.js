@@ -14,7 +14,7 @@ function Courses() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 👉 NEW: State to track which video is currently playing
+  // State to track which video is currently playing
   const [playingVideo, setPlayingVideo] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -26,6 +26,12 @@ function Courses() {
   const [expandedDescId, setExpandedDescId] = useState(null);
 
   const [activeMenuId, setActiveMenuId] = useState(null);
+
+  // 🤖 NEW AI FEATURE HUB STATES
+  const [isAiOpen, setIsAiOpen] = useState(false);
+  const [aiMessages, setAiMessages] = useState([]);
+  const [aiInput, setAiInput] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     fetchAllCourses();
@@ -51,7 +57,7 @@ function Courses() {
       if (!userInfo) {
         setSearchParams({}); // Instantly erase the '?course=X' from the URL
         setVideos([]); // Ensure videos array is empty
-        return; // <--- This 'return' completely stops the function right here!
+        return; 
       }
 
       // If they ARE logged in, go ahead and fetch!
@@ -109,19 +115,65 @@ function Courses() {
     setPlayingVideo(null); // Ensure video closes when going back
   };
 
-  if (loading) return <div className="loading-text">Loading courses...</div>;
+  // ==========================================
+  // 🤖 NEW AI FEATURE HUB OPERATIONS HANDLERS
+  // ==========================================
+  
+  // Fires off initial overview explanation prompt
+  const triggerAiExplanation = async (videoInfo) => {
+    setAiLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const promptText = `Provide a brief overview and core concepts for a computer science lecture video titled "${videoInfo.title}". Description context: ${videoInfoInfo.description || "None"}. Keep it informative and highly readable for a college student.`;
+      
+      const res = await axios.post("https://eduvid-backend-zfkv.onrender.com/api/ai/ask", 
+        { prompt: promptText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      setAiMessages([{ sender: "bot", text: res.data.reply }]);
+    } catch (err) {
+      setAiMessages([{ sender: "bot", text: "Could not establish pipeline connection to Gemini." }]);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
+  // Handles custom chat questions typed by the student
+  const handleAiChatSubmit = async (e) => {
+    e.preventDefault();
+    if (!aiInput.trim() || aiLoading) return;
 
-// Update and delete
-  // 2. Toggle the menu when three-dots are clicked
+    const userQuery = aiInput.trim();
+    setAiMessages((prev) => [...prev, { sender: "user", text: userQuery }]);
+    setAiInput("");
+    setAiLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const promptText = `The student is watching a coding video lecture titled "${playingVideo.title}". Answer this question about it: ${userQuery}`;
+      
+      const res = await axios.post("https://eduvid-backend-zfkv.onrender.com/api/ai/ask", 
+        { prompt: promptText },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setAiMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
+    } catch (err) {
+      setAiMessages((prev) => [...prev, { sender: "bot", text: "Error fetching automated response lines." }]);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  // Update and delete operations
   const toggleMenu = (e, videoId) => {
-    e.stopPropagation(); // Prevents clicking the dots from playing the video!
+    e.stopPropagation(); 
     setActiveMenuId(activeMenuId === videoId ? null : videoId);
   };
 
-  // 3. Frontend Delete 
   const handleDeleteClick = async (e, videoId) => {
-    e.stopPropagation(); // Stops video player from opening
+    e.stopPropagation(); 
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this video?",
     );
@@ -129,7 +181,6 @@ function Courses() {
 
     try {
       const token = localStorage.getItem("token");
-      // Frontend API call to backend (we will write backend code next)
       await axios.delete(
         `https://eduvid-backend-zfkv.onrender.com/api/upload/${videoId}`,
         {
@@ -137,7 +188,6 @@ function Courses() {
         },
       );
 
-      // Refresh your videos list instantly on screen after deleting
       setVideos(videos.filter((video) => video.id !== videoId));
       setActiveMenuId(null);
       alert("Video deleted successfully!");
@@ -147,12 +197,10 @@ function Courses() {
     }
   };
 
-  // 4. Frontend Update 
   const handleUpdateClick = (e, video) => {
-    e.stopPropagation(); // Stops video player from opening
+    e.stopPropagation(); 
     setActiveMenuId(null);
     alert(`Update option clicked for: ${video.title}`);
-    // Your edit modal logic will go here
   };
 
   return (
@@ -211,7 +259,6 @@ function Courses() {
 
           <h3 className="videos-heading">Course Videos ({videos.length})</h3>
 
-          {/* 👉 NEW: Square Video Grid */}
           {!isValidUser ? (
             <div
               style={{
@@ -229,64 +276,44 @@ function Courses() {
               {videos.length === 0 ? (
                 <p>No videos uploaded to this course yet.</p>
               ) : (
-                /* MINIMUM CHANGE FIX HERE: Removed the extra outer curly braces around the map */
                 videos.map((video, index) => (
                   <div key={video.id} className="video-card">
 
-                    
-
-                    {/*THE SECURE THREE-DOT MENU (ONLY TEACHERS SEE THIS) */}
-                        {userInfo?.role === "teacher" && (
-                          <div className="menu-container">
-
-
-                            <div className="video-card-info" style={{ position: "relative" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                        
-                        {/* Video Title */}
-                        <h4
-                          className="video-title clickable-title"
-                          onClick={() => setPlayingVideo(video)}
-                          title={video.title}
-                           // Leaves clean space for the dots
-                        >
-                          {index + 1}. {video.title}
-                        </h4>
-
-                        
-
-                      </div>
-                    </div>
-
-                    
-                            {/* <button 
-                              className="three-dots-btn" 
-                              onClick={(e) => toggleMenu(e, video.id)}
+                    {/* THE SECURE THREE-DOT MENU (ONLY TEACHERS SEE THIS) */}
+                    {userInfo?.role === "teacher" && (
+                      <div className="menu-container">
+                        <div className="video-card-info" style={{ position: "relative" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                            <h4
+                              className="video-title clickable-title"
+                              onClick={() => setPlayingVideo(video)}
+                              title={video.title}
                             >
-                              <i className="fa-solid fa-ellipsis-vertical"></i>
-                            </button> */}
+                              {index + 1}. {video.title}
+                            </h4>
+                          </div>
+                        </div>
 
-                            {/* The Dropdown Options Box */}
-                            {activeMenuId === video.id && (
-                              <div className="dropdown-options-menu">
-                                <div 
-                                  className="dropdown-item edit-opt" 
-                                  onClick={(e) => handleUpdateClick(e, video)}
-                                >
-                                  <i className="fa-solid fa-pen"></i> Edit
-                                </div>
-                                <div 
-                                  className="dropdown-item delete-opt" 
-                                  onClick={(e) => handleDeleteClick(e, video.id)}
-                                >
-                                  <i className="fa-solid fa-trash"></i> Delete
-                                </div>
-                              </div>
-                            )}
+                        {activeMenuId === video.id && (
+                          <div className="dropdown-options-menu">
+                            <div 
+                              className="dropdown-item edit-opt" 
+                              onClick={(e) => handleUpdateClick(e, video)}
+                            >
+                              <i className="fa-solid fa-pen"></i> Edit
+                            </div>
+                            <div 
+                              className="dropdown-item delete-opt" 
+                              onClick={(e) => handleDeleteClick(e, video.id)}
+                            >
+                              <i className="fa-solid fa-trash"></i> Delete
+                            </div>
                           </div>
                         )}
+                      </div>
+                    )}
                     
-                    {/* 1. THUMBNAIL */}
+                    {/* THUMBNAIL CONTAINER */}
                     <div
                       className="video-thumbnail-container"
                       onClick={() => setPlayingVideo(video)}
@@ -308,9 +335,6 @@ function Courses() {
                       </div>
                     </div>
 
-                    {/* 2. TEXT AND OPTIONS CONTAINER */}
-                    
-
                   </div>
                 ))
               )}
@@ -319,56 +343,88 @@ function Courses() {
         </div>
       )}
 
-      {/* --- VIEW 3: THE CINEMATIC VIDEO PLAYER MODAL --- */}
+      {/* --- VIEW 3: THE CINEMATIC SPLIT VIDEO PLAYER MODAL --- */}
       {playingVideo && (
-        <div className="video-player-overlay">
+        <div className={`video-player-overlay ${isAiOpen ? "ai-layout-active" : ""}`}>
           <div className="video-player-container">
-            <div className="player-header">
-              <h3>{playingVideo.title}</h3>
-              <button
-                className="close-player-btn"
-                onClick={() => setPlayingVideo(null)}
-              >
-                ✖ Close
-              </button>
+            
+            {/* 🎥 LEFT SIDE PANEL: LECTURE PRESENTATION WINDOW */}
+            <div className="video-content-side">
+              <div className="player-header">
+                <h3>{playingVideo.title}</h3>
+                <div className="player-header-actions">
+                  
+                  {/* AI CONTEXT TRIGGER ACCESS BUTTON */}
+                  <button 
+                    className="ask-gemini-btn"
+                    onClick={() => {
+                      setIsAiOpen(!isAiOpen);
+                      if (aiMessages.length === 0) {
+                        triggerAiExplanation(playingVideo);
+                      }
+                    }}
+                  >
+                    <i className="fa-solid fa-robot"></i> Ask Gemini
+                  </button>
+                  
+                  <button
+                    className="close-player-btn"
+                    onClick={() => {
+                      setPlayingVideo(null);
+                      setIsAiOpen(false);
+                      setAiMessages([]);
+                    }}
+                  >
+                    ✖ Close
+                  </button>
+                </div>
+              </div>
+
+              <video controls autoPlay className="actual-video-element" src={playingVideo.video_url}>
+                Your browser does not support HTML video.
+              </video>
+
+              {playingVideo.description && (
+                <div className="player-description-box">
+                  <h4 className="about-video-header">About this video</h4>
+                  <p className="about-video-paragraph">{playingVideo.description}</p>
+                </div>
+              )}
             </div>
 
-            {/* The actual HTML5 Video Player */}
-            <video
-              controls
-              autoPlay
-              className="actual-video-element"
-              src={playingVideo.video_url}
-            >
-              Your browser does not support HTML video.
-            </video>
-
-            {playingVideo.description && (
-              <div
-                className="player-description-box"
-                style={{
-                  padding: "10px",
-                  color: "white",
-                  backgroundColor: "#111",
-                  height: "100%",
-                }}
-              >
-                <h4 style={{ margin: "0 0 10px 0", color: "#ccc" }}>
-                  About this video
-                </h4>
-                <p
-                  style={{
-                    margin: 0,
-                    lineHeight: "1.6",
-                    color: "#eee",
-                    height: "100%",
-                    wordWrap: "break-word",
-                  }}
-                >
-                  {playingVideo.description}
-                </p>
+            {/* 🤖 RIGHT PANEL / TOP FLUID SLIDE DOWN SHEET PANEL */}
+            {isAiOpen && (
+              <div className="gemini-split-panel">
+                <div className="ai-panel-header">
+                  <h4><i className="fa-solid fa-brain"></i> Gemini AI Assistant</h4>
+                  <button onClick={() => setIsAiOpen(false)}>✖</button>
+                </div>
+                
+                <div className="ai-chat-body">
+                  {aiMessages.map((msg, i) => (
+                    <div key={i} className={`ai-bubble ${msg.sender}`}>
+                      <strong>{msg.sender === "user" ? "You: " : "Gemini: "}</strong>
+                      <p>{msg.text}</p>
+                    </div>
+                  ))}
+                  {aiLoading && <div className="ai-bubble bot loading">Gemini is thinking...</div>}
+                </div>
+                
+                <form onSubmit={handleAiChatSubmit} className="ai-chat-footer">
+                  <input
+                    type="text"
+                    placeholder="Ask anything about this lecture..."
+                    value={aiInput}
+                    onChange={(e) => setAiInput(e.target.value)}
+                    disabled={aiLoading}
+                  />
+                  <button type="submit" disabled={aiLoading || !aiInput.trim()}>
+                    <i className="fa-solid fa-paper-plane"></i>
+                  </button>
+                </form>
               </div>
             )}
+
           </div>
         </div>
       )}
