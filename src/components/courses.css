@@ -837,6 +837,146 @@
 }
 
 
+/* three dots of courses */
+/* ========================================================
+   COURSE CARD THREE-DOTS MENU & DROPDOWN LAYOUT STYLES
+   ======================================================== */
+
+.public-card-info {
+  position: relative;
+}
+
+.course-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.public-card-title {
+  margin: 0;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.course-menu-trigger-wrapper {
+  position: relative;
+}
+
+.course-three-dots-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+
+.course-three-dots-btn:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+}
+
+/* Floating course options block dropdown menu box */
+.course-action-dropdown {
+  position: absolute;
+  bottom: 32px; /* Opens upward so it doesn't get cut off by card boundary */
+  right: 0;
+  z-index: 50;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  min-width: 105px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.course-dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #334155;
+  transition: background 0.2s;
+}
+
+.course-dropdown-item:hover {
+  background-color: #f8fafc;
+}
+
+.course-dropdown-item.delete {
+  color: #ef4444;
+}
+
+.course-dropdown-item.delete:hover {
+  background-color: #fee2e2;
+}
+
+.course-manage-btn-text {
+  display: block;
+  margin-top: 4px;
+}
+
+/* ========================================================
+   REFINED COURSE INTERACTIVE MANAGEMENT STYLES
+   ======================================================== */
+.access-denied-frame {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.error-title-red {
+  color: #ff4d4d;
+}
+
+.error-desc-text {
+  font-size: 18px;
+  color: #32396e;
+}
+
+.clean-link-btn {
+  display: inline-block;
+  text-decoration: none;
+  margin-top: 15px;
+}
+
+.video-title-row-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.about-video-header {
+  margin: 0 0 10px 0;
+  color: #ccc;
+}
+
+.about-video-paragraph {
+  margin: 0;
+  line-height: 1.6;
+  color: #eee;
+  word-wrap: break-word;
+}
+
+.player-description-box {
+  padding: 20px;
+  color: white;
+  background-color: #111;
+  height: auto;
+}
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {
 

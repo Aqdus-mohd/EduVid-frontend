@@ -21,12 +21,19 @@ function MyCourses() {
   const [activeMenuId, setActiveMenuId] = useState(null);
   //state for deleting
   const [videoToDelete, setVideoToDelete] = useState(null);
-  // State for the editing modal
+  // State for the editing modal for videos
   const [videoToUpdate, setVideoToUpdate] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editThumbnailFile, setEditThumbnailFile] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  //states for delete and edit courses
+  const [activeMenuCourseId, setActiveMenuCourseId] = useState(null);
+  const [courseToDelete, setCourseToDelete] = useState(null);
+  const [courseToUpdate, setCourseToUpdate] = useState(null);
+  const [editCourseTitle, setEditCourseTitle] = useState("");
+  const [editCourseThumbFile, setEditCourseThumbFile] = useState(null);
+  const [isUpdatingCourse, setIsUpdatingCourse] = useState(false);
 
   const selectedCourse = courses.find(
     (c) => c.id.toString() === selectedCourseId,
@@ -93,71 +100,84 @@ function MyCourses() {
     setSearchParams({});
     setPlayingVideo(null);
   };
-
-  // 1. Show Loading Text while API runs
-  if (loading)
-    return <div className="loading-text">Loading your courses...</div>;
-
-  // 2. 🛑 ACCESS DENIED VIEW: If a student tries to hack or type the URL manually
-  if (!isTeacher) {
-    return (
-      <div
-        className="courses-page-wrapper"
-        style={{ textAlign: "center", marginTop: "100px" }}
-      >
-        <h2 style={{ color: "#ff4d4d" }}>🔒 Access Denied</h2>
-        <p style={{ fontSize: "18px", color: "#32396e" }}>
-          This area is restricted to instructors only. Please log in with a
-          Teacher account to manage your contents.
-        </p>
-        <Link
-          to="/Login"
-          className="video-play-btn"
-          style={{
-            display: "inline-block",
-            textDecoration: "none",
-            marginTop: "15px",
-          }}
-        >
-          Go to Login
-        </Link>
-      </div>
-    );
-  }
-
-  const toggleMenu = (e, videoId) => {
-    e.stopPropagation(); // Prevents clicking the dots from playing the video!
-    setActiveMenuId(activeMenuId === videoId ? null : videoId);
-  };
-  //DELETE
-  // 1. Frontend Delete
-  const handleDeleteClick = (e, videoId) => {
-    e.stopPropagation(); // Stops video player from opening
-    setVideoToDelete(videoId); // Triggers the modal to open
-    setActiveMenuId(null); // Closes the three-dot dropdown menu
-  };
-
-  // 2. This function executes the real API call when you click "Delete" inside the modal
-  const confirmDeleteVideo = async () => {
-    if (!videoToDelete) return;
+//COURSE UPDATE AND DELETE
+ // Real API Execution for Deleting a Course
+  const confirmDeleteCourse = async () => {
+    if (!courseToDelete) return;
 
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `https://eduvid-backend-zfkv.onrender.com/api/upload/${videoToDelete}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+        `https://eduvid-backend-zfkv.onrender.com/api/courses/${courseToDelete}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Refresh your videos list instantly on screen after deleting
-      setVideos(videos.filter((video) => video.id !== videoToDelete));
-      toast.success("Video deleted successfully!");
+      setCourses(courses.filter((course) => course.id !== courseToDelete));
+      toast.success("Course deleted successfully!");
     } catch (err) {
-      console.error("Delete failed:", err);
-      toast.error("Failed to delete video.");
+      console.error("Course delete failed:", err);
+      toast.error("Failed to delete course. Remove its videos first!");
     } finally {
-      setVideoToDelete(null); // Closes the modal smoothly at the end
+      setCourseToDelete(null);
+    }
+  };
+
+  const handleCourseEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!courseToUpdate) return;
+    if (editCourseTitle.trim() === "") return toast.error("Course Title is required.");
+
+    setIsUpdatingCourse(true);
+    const formData = new FormData();
+    formData.append("title", editCourseTitle.trim());
+    
+    if (editCourseThumbFile) {
+      formData.append("thumbnail", editCourseThumbFile);
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.put(
+        `https://eduvid-backend-zfkv.onrender.com/api/courses/${courseToUpdate.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const safeThumbnailUrl = res.data?.thumbnail_url || res.data?.data?.thumbnail_url || courseToUpdate.thumbnail_url;
+
+      setCourses(
+        courses.map((c) =>
+          c.id === courseToUpdate.id
+            ? { ...c, title: editCourseTitle.trim(), thumbnail_url: safeThumbnailUrl }
+            : c
+        )
+      );
+
+      toast.success("Course details updated!");
+    } catch (err) {
+      console.error("Course update failed:", err);
+      
+      // 🚨 FIXED: Detects if the backend sent raw HTML code (like a 404 page) and cleans it up
+      let cleanMessage = "Failed to update course properties.";
+      const serverData = err.response?.data;
+      
+      if (typeof serverData === "string" && serverData.includes("<!DOCTYPE html>")) {
+        cleanMessage = "Backend route missing (404). Check your router paths!";
+      } else if (serverData?.message) {
+        cleanMessage = serverData.message;
+      }
+      
+      toast.error(cleanMessage);
+    } finally {
+      // 🚨 FIXED: Moving this inside finally forces the modal to close every single time,
+      // regardless of whether the network request fails or succeeds!
+      setCourseToUpdate(null);
+      setIsUpdatingCourse(false);
     }
   };
   //EDIT
@@ -234,7 +254,37 @@ function MyCourses() {
     }
   };
 
-  // TEACHER AREA (Only authorized teachers reach this line)
+
+  if (loading)
+    return <div className="loading-text">Loading your courses...</div>;
+
+  if (!isTeacher) {
+    return (
+      <div
+        className="courses-page-wrapper"
+        style={{ textAlign: "center", marginTop: "100px" }}
+      >
+        <h2 style={{ color: "#ff4d4d" }}>🔒 Access Denied</h2>
+        <p style={{ fontSize: "18px", color: "#32396e" }}>
+          This area is restricted to instructors only. Please log in with a
+          Teacher account to manage your contents.
+        </p>
+        <Link
+          to="/Login"
+          className="video-play-btn"
+          style={{
+            display: "inline-block",
+            textDecoration: "none",
+            marginTop: "15px",
+          }}
+        >
+          Go to Login
+        </Link>
+      </div>
+    );
+  }
+
+  // Only authorized teachers reach this line
   return (
     <div className="courses-page-wrapper">
       {/* --- VIEW 1: LIST MY PRIVATE COURSES --- */}
@@ -260,9 +310,55 @@ function MyCourses() {
                   alt={course.title}
                   className="public-card-img"
                 />
+                
+                {/* 🚨 CLEAN JSX: All inline styles have been turned into class names! */}
                 <div className="public-card-info">
-                  <h3 className="public-card-title">{course.title}</h3>
-                  <span className="view-btn">Manage Videos ➔</span>
+                  <div className="course-header-row">
+                    <h3 className="public-card-title">
+                      {course.title}
+                    </h3>
+                    
+                    {/* Options dropdown wrapper */}
+                    <div className="course-menu-trigger-wrapper">
+                      <button
+                        className="course-three-dots-btn"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Stops card layout click trigger
+                          setActiveMenuCourseId(activeMenuCourseId === course.id ? null : course.id);
+                        }}
+                      >
+                        <i className="fa-solid fa-ellipsis-vertical"></i>
+                      </button>
+
+                      {activeMenuCourseId === course.id && (
+                        <div className="course-action-dropdown">
+                          <div
+                            className="course-dropdown-item edit"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCourseToUpdate(course);
+                              setEditCourseTitle(course.title);
+                              setEditCourseThumbFile(null);
+                              setActiveMenuCourseId(null);
+                            }}
+                          >
+                            <i className="fa-solid fa-pen"></i> Edit
+                          </div>
+                          <div
+                            className="course-dropdown-item delete"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCourseToDelete(course.id);
+                              setActiveMenuCourseId(null);
+                            }}
+                          >
+                            <i className="fa-solid fa-trash"></i> Delete
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <span className="course-manage-btn-text view-btn">Manage Videos ➔</span>
                 </div>
               </div>
             ))}
@@ -459,6 +555,80 @@ function MyCourses() {
           </div>
         </div>
       )}
+
+
+
+      {/* NEW MODALS: COURSE DELETE & UPDATE*/}
+
+      {/* Course Delete Confirmation Modal */}
+      {courseToDelete && (
+        <div className="modal-blur-overlay" onClick={() => setCourseToDelete(null)}>
+          <div className="custom-confirm-box" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-warn-icon">
+              <i className="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3>Delete Entire Course?</h3>
+            <p>
+              Are you sure? This deletes the course framework. Make sure all videos inside are deleted first, or the server will reject this action.
+            </p>
+            <div className="modal-buttons-row">
+              <button className="modal-btn-cancel" onClick={() => setCourseToDelete(null)}>
+                Cancel
+              </button>
+              <button className="modal-btn-danger" onClick={confirmDeleteCourse}>
+                Delete Course
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Course Editing Layout Panel Modal */}
+      {courseToUpdate && (
+        <div className="modal-blur-overlay" onClick={() => setCourseToUpdate(null)}>
+          <div className="custom-edit-box" onClick={(e) => e.stopPropagation()}>
+            <div className="edit-modal-header">
+              <h3>⚙️ Edit Course Properties</h3>
+              <button className="edit-modal-close" onClick={() => setCourseToUpdate(null)}>
+                ✖
+              </button>
+            </div>
+
+            <form onSubmit={handleCourseEditSubmit} className="edit-modal-form">
+              <div className="form-group-edit">
+                <label>Course Name</label>
+                <input
+                  type="text"
+                  placeholder="Update Course Name"
+                  value={editCourseTitle}
+                  onChange={(e) => setEditCourseTitle(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group-edit">
+                <label>Change Thumbnail Banner (Optional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setEditCourseThumbFile(e.target.files[0])}
+                />
+              </div>
+
+              <div className="edit-modal-actions">
+                <button type="button" className="edit-btn-cancel" onClick={() => setCourseToUpdate(null)}>
+                  Cancel
+                </button>
+                <button type="submit" className="edit-btn-save" disabled={isUpdatingCourse}>
+                  {isUpdatingCourse ? <span className="btn-spinner"></span> : "Save Course Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+
 
       {/*  EDIT / UPDATE MODAL*/}
       {videoToUpdate && (
