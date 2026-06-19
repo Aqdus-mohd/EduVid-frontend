@@ -977,6 +977,74 @@
   height: auto;
 }
 
+
+/* ========================================================
+   🤖 PREMIUM SPLIT-SCREEN GEMINI LAYOUT ENGINE
+   ======================================================== */
+
+/* Base Overlay Setup */
+.video-player-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Base Modal Container Wrapper Box */
+.video-player-container {
+  background-color: #1a1a1a;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+}
+
+/* --- 💻 DESKTOP VIEW CHANGES WHEN AI IS OPEN --- */
+.ai-layout-active .video-player-container {
+  max-width: 1400px; /* Stretch container framework width out wide */
+  width: 95vw;
+  height: 85vh;
+  max-height: 85vh;
+  flex-direction: row; /* Aligns Video container and AI window side-by-side */
+}
+
+/* Left side content panel settings */
+.video-content-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  width: 100%;
+  transition: width 0.35s ease;
+}
+
+.ai-layout-active .video-content-side {
+  width: 50%; /* Automatically pushes the video over to fill exactly half width */
+}
+
+/* Right Side Gemini Window Panel */
+.gemini-split-panel {
+  width: 50%; /* Occupies the other exact half of desktop workspace */
+  height: 100%;
+  background-color: #1e1e24;
+  border-left: 2px solid #2d2d35;
+  display: flex;
+  flex-direction: column;
+  animation: slideInFromRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {
 
@@ -1043,4 +1111,51 @@
   .video-player-container{
     height: 380px;  
   }
+
+
+  .ai-layout-active.video-player-overlay {
+    padding: 0;
+  }
+
+  .ai-layout-active .video-player-container {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    /* ⚡ THE MAGIC: Reverses flex stacking direction so Gemini sits on top, and video down below */
+    flex-direction: column-reverse; 
+  }
+
+  /* Shunted Bottom Video side settings */
+  .ai-layout-active .video-content-side {
+    height: 50%;
+    width: 100%;
+  }
+
+  /* Top Sliding Down Gemini Panel settings */
+  .ai-layout-active .gemini-split-panel {
+    width: 100%;
+    height: 50%;
+    border-left: none;
+    border-bottom: 2px solid #2d2d35;
+    animation: slideInFromTop 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+
+  /* 🚫 CLEAN HIDE FEATURE: Drops details card description to prevent messy squishing inside mobile view */
+  .ai-layout-active .player-description-box {
+    display: none !important;
+  }
+}
+
+/* ========================================================
+   🎬 ANIMATION SLIDE SPECIFICATIONS
+   ======================================================== */
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideInFromTop {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
