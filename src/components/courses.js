@@ -133,7 +133,10 @@ function Courses() {
       
       setAiMessages([{ sender: "bot", text: res.data.reply }]);
     } catch (err) {
-      setAiMessages([{ sender: "bot", text: "Could not establish pipeline connection to Gemini." }]);
+      console.error("AI Error:", err);
+      // 🚨 Extract the exact message from our new backend debug route
+      const systemError = err.response?.data?.message || "Error fetching response.";
+      setAiMessages((prev) => [...prev, { sender: "bot", text: systemError }]);
     } finally {
       setAiLoading(false);
     }
@@ -160,7 +163,10 @@ function Courses() {
 
       setAiMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
     } catch (err) {
-      setAiMessages((prev) => [...prev, { sender: "bot", text: "Error fetching automated response lines." }]);
+      console.error("AI Error:", err);
+      // 🚨 Extract the exact message from our new backend debug route
+      const systemError = err.response?.data?.message || "Error fetching response.";
+      setAiMessages((prev) => [...prev, { sender: "bot", text: systemError }]);
     } finally {
       setAiLoading(false);
     }
@@ -204,8 +210,8 @@ function Courses() {
   };
 
   if (loading)
-    return <div className="loading-text">Loading your courses...</div>;
-  
+    return <div className="loading-text">Loading courses...</div>;
+
   return (
     <div className="courses-page-wrapper">
       {!userInfo && (
