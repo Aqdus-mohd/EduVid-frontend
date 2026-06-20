@@ -124,7 +124,7 @@ function Courses() {
     setAiLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const promptText = `Provide a brief overview and core concepts for a computer science lecture video titled "${videoInfo.title}". Description context: ${videoInfoInfo.description || "None"}. Keep it informative and highly readable for a college student.`;
+      const promptText = `Provide a brief overview and core concepts for a computer science lecture video titled "${videoInfo.title}". Description context: ${videoInfo.description || "None"}. Keep it informative and highly readable for a college student.`;
       
       const res = await axios.post("https://eduvid-backend-zfkv.onrender.com/api/ai/ask", 
         { prompt: promptText },
@@ -203,6 +203,9 @@ function Courses() {
     alert(`Update option clicked for: ${video.title}`);
   };
 
+  if (loading)
+    return <div className="loading-text">Loading your courses...</div>;
+  
   return (
     <div className="courses-page-wrapper">
       {!userInfo && (
