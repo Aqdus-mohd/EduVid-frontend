@@ -412,8 +412,13 @@ function Courses() {
                 <div className="ai-chat-body">
                   {aiMessages.map((msg, i) => (
                     <div key={i} className={`ai-bubble ${msg.sender}`}>
-                      <strong>{msg.sender === "user" ? "You: " : "Gemini: "}</strong>
-                      <p>{msg.text}</p>
+                      <strong>{msg.sender === "user" ? "You" : "Gemini"}</strong>
+                      
+                      {/* 🚨 PARSES THE AI BOLD STARS (**) GRACEFULLY INTO HTML ELEMENTS */}
+                      <p dangerouslySetInnerHTML={{
+                        __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                      }} />
+                      
                     </div>
                   ))}
                   {aiLoading && <div className="ai-bubble bot loading">Gemini is thinking...</div>}

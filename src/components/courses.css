@@ -1045,6 +1045,190 @@
   animation: slideInFromRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
+
+.gemini-split-panel {
+  width: 50%;
+  height: 100%;
+  background-color: #131314; /* Official Gemini Web App background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  animation: slideInFromRight 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Minimalist Modern Header bar */
+.ai-panel-header {
+  background-color: #131314;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #28282a;
+}
+
+.ai-panel-header h4 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #e3e3e3;
+}
+
+.ai-panel-header h4 i {
+  color: #4b90ff; /* Glowing blue Gemini AI icon */
+  text-shadow: 0 0 10px rgba(75, 144, 255, 0.4);
+}
+
+.ai-panel-header button {
+  background: none;
+  border: none;
+  color: #8e918f;
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+.ai-panel-header button:hover {
+  color: #e3e3e3;
+}
+
+/* Clean Chat Area Box */
+.ai-chat-body {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scroll-behavior: smooth;
+}
+
+/* Custom Sleek Dark Scrollbar */
+.ai-chat-body::-webkit-scrollbar {
+  width: 8px;
+}
+.ai-chat-body::-webkit-scrollbar-track {
+  background: #131314;
+}
+.ai-chat-body::-webkit-scrollbar-thumb {
+  background: #2a2b2f;
+  border-radius: 4px;
+}
+
+/* Chat Message Bubbles Layout */
+.ai-bubble {
+  max-width: 85%;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #e3e3e3;
+}
+
+/* User Bubble: Sleek rounded dark pill on the right side */
+.ai-bubble.user {
+  background-color: #2a2b2f;
+  padding: 12px 20px;
+  border-radius: 24px;
+  align-self: flex-end;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Gemini Bubble: Clean inline layout with no border background box */
+.ai-bubble.bot {
+  background-color: transparent;
+  padding: 0;
+  align-self: flex-start;
+  max-width: 100%;
+  width: 100%;
+}
+
+.ai-bubble strong {
+  display: block;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.ai-bubble.user strong { color: #a8aab4; }
+.ai-bubble.bot strong { color: #4b90ff; }
+
+.ai-bubble p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.ai-bubble.loading {
+  color: #8e918f;
+  font-style: italic;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Form container that forces the input to stay in the center at the bottom */
+.ai-chat-footer {
+  display: flex;
+  align-items: center;
+  background-color: #1e1e20; /* Floating pill background */
+  border-radius: 32px;
+  padding: 6px 12px 6px 24px;
+  margin: 16px auto 24px;
+  width: 90%;
+  max-width: 650px;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s;
+  border: 1px solid transparent;
+}
+
+.ai-chat-footer:focus-within {
+  border-color: #3c4043;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.ai-chat-footer input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px 0;
+  color: #e3e3e3;
+  font-size: 1rem;
+  outline: none;
+}
+
+.ai-chat-footer input::placeholder {
+  color: #8e918f;
+}
+
+.ai-chat-footer button {
+  background: transparent;
+  border: none;
+  color: #e3e3e3;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.ai-chat-footer button:hover:not(:disabled) {
+  background-color: #2d2e31;
+  color: #4b90ff;
+}
+
+.ai-chat-footer button:disabled {
+  color: #444746;
+  cursor: not-allowed;
+}
+
+/* Animations code */
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {
 
@@ -1144,6 +1328,18 @@
   /* 🚫 CLEAN HIDE FEATURE: Drops details card description to prevent messy squishing inside mobile view */
   .ai-layout-active .player-description-box {
     display: none !important;
+  }
+
+
+  .ai-layout-active .gemini-split-panel {
+    width: 100%;
+    height: 50%;
+    background-color: #131314;
+  }
+  
+  .ai-chat-footer {
+    margin: 8px auto 16px;
+    width: 92%;
   }
 }
 
