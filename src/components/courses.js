@@ -57,7 +57,7 @@ function Courses() {
       if (!userInfo) {
         setSearchParams({}); // Instantly erase the '?course=X' from the URL
         setVideos([]); // Ensure videos array is empty
-        return; 
+        return;
       }
 
       // If they ARE logged in, go ahead and fetch!
@@ -118,24 +118,26 @@ function Courses() {
   // ==========================================
   // 🤖 NEW AI FEATURE HUB OPERATIONS HANDLERS
   // ==========================================
-  
+
   // Fires off initial overview explanation prompt
   const triggerAiExplanation = async (videoInfo) => {
     setAiLoading(true);
     try {
       const token = localStorage.getItem("token");
       const promptText = `Provide a brief overview and core concepts for a computer science lecture video titled "${videoInfo.title}". Description context: ${videoInfo.description || "None"}. Keep it informative and highly readable for a college student.`;
-      
-      const res = await axios.post("https://eduvid-backend-zfkv.onrender.com/api/ai/ask", 
+
+      const res = await axios.post(
+        "https://eduvid-backend-zfkv.onrender.com/api/ai/ask",
         { prompt: promptText },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
-      
+
       setAiMessages([{ sender: "bot", text: res.data.reply }]);
     } catch (err) {
       console.error("AI Error:", err);
       // 🚨 Extract the exact message from our new backend debug route
-      const systemError = err.response?.data?.message || "Error fetching response.";
+      const systemError =
+        err.response?.data?.message || "Error fetching response.";
       setAiMessages((prev) => [...prev, { sender: "bot", text: systemError }]);
     } finally {
       setAiLoading(false);
@@ -155,17 +157,22 @@ function Courses() {
     try {
       const token = localStorage.getItem("token");
       const promptText = `The student is watching a coding video lecture titled "${playingVideo.title}". Answer this question about it: ${userQuery}`;
-      
-      const res = await axios.post("https://eduvid-backend-zfkv.onrender.com/api/ai/ask", 
+
+      const res = await axios.post(
+        "https://eduvid-backend-zfkv.onrender.com/api/ai/ask",
         { prompt: promptText },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      setAiMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
+      setAiMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: res.data.reply },
+      ]);
     } catch (err) {
       console.error("AI Error:", err);
       // 🚨 Extract the exact message from our new backend debug route
-      const systemError = err.response?.data?.message || "Error fetching response.";
+      const systemError =
+        err.response?.data?.message || "Error fetching response.";
       setAiMessages((prev) => [...prev, { sender: "bot", text: systemError }]);
     } finally {
       setAiLoading(false);
@@ -174,12 +181,12 @@ function Courses() {
 
   // Update and delete operations
   const toggleMenu = (e, videoId) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setActiveMenuId(activeMenuId === videoId ? null : videoId);
   };
 
   const handleDeleteClick = async (e, videoId) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this video?",
     );
@@ -204,13 +211,12 @@ function Courses() {
   };
 
   const handleUpdateClick = (e, video) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setActiveMenuId(null);
     alert(`Update option clicked for: ${video.title}`);
   };
 
-  if (loading)
-    return <div className="loading-text">Loading courses...</div>;
+  if (loading) return <div className="loading-text">Loading courses...</div>;
 
   return (
     <div className="courses-page-wrapper">
@@ -287,12 +293,20 @@ function Courses() {
               ) : (
                 videos.map((video, index) => (
                   <div key={video.id} className="video-card">
-
                     {/* THE SECURE THREE-DOT MENU (ONLY TEACHERS SEE THIS) */}
                     {userInfo?.role === "teacher" && (
                       <div className="menu-container">
-                        <div className="video-card-info" style={{ position: "relative" }}>
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                        <div
+                          className="video-card-info"
+                          style={{ position: "relative" }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "flex-start",
+                            }}
+                          >
                             <h4
                               className="video-title clickable-title"
                               onClick={() => setPlayingVideo(video)}
@@ -305,14 +319,14 @@ function Courses() {
 
                         {activeMenuId === video.id && (
                           <div className="dropdown-options-menu">
-                            <div 
-                              className="dropdown-item edit-opt" 
+                            <div
+                              className="dropdown-item edit-opt"
                               onClick={(e) => handleUpdateClick(e, video)}
                             >
                               <i className="fa-solid fa-pen"></i> Edit
                             </div>
-                            <div 
-                              className="dropdown-item delete-opt" 
+                            <div
+                              className="dropdown-item delete-opt"
                               onClick={(e) => handleDeleteClick(e, video.id)}
                             >
                               <i className="fa-solid fa-trash"></i> Delete
@@ -321,7 +335,7 @@ function Courses() {
                         )}
                       </div>
                     )}
-                    
+
                     {/* THUMBNAIL CONTAINER */}
                     <div
                       className="video-thumbnail-container"
@@ -343,7 +357,6 @@ function Courses() {
                         <i className="fa-solid fa-play"></i>
                       </div>
                     </div>
-
                   </div>
                 ))
               )}
@@ -354,17 +367,17 @@ function Courses() {
 
       {/* --- VIEW 3: THE CINEMATIC SPLIT VIDEO PLAYER MODAL --- */}
       {playingVideo && (
-        <div className={`video-player-overlay ${isAiOpen ? "ai-layout-active" : ""}`}>
+        <div
+          className={`video-player-overlay ${isAiOpen ? "ai-layout-active" : ""}`}
+        >
           <div className="video-player-container">
-            
             {/* 🎥 LEFT SIDE PANEL: LECTURE PRESENTATION WINDOW */}
             <div className="video-content-side">
               <div className="player-header">
                 <h3>{playingVideo.title}</h3>
                 <div className="player-header-actions">
-                  
                   {/* AI CONTEXT TRIGGER ACCESS BUTTON */}
-                  <button 
+                  <button
                     className="ask-gemini-btn"
                     onClick={() => {
                       setIsAiOpen(!isAiOpen);
@@ -373,9 +386,36 @@ function Courses() {
                       }
                     }}
                   >
-                    <i className="fa-solid fa-robot"></i> Ask Gemini
+                    {/* ✨ Official Multi-Color Gemini Sparkle SVG */}
+                    <svg
+                      className="gemini-sparkle-svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 2C12 7.5 16.5 12 22 12C16.5 12 12 16.5 12 22C12 16.5 7.5 12 2 12C7.5 12 12 7.5 12 2Z"
+                        fill="url(#gemini-gradient)"
+                      />
+                      <defs>
+                        <linearGradient
+                          id="gemini-gradient"
+                          x1="2"
+                          y1="2"
+                          x2="22"
+                          y2="22"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset="0%" stopColor="#ff4b4b" />
+                          <stop offset="30%" stopColor="#ffb84b" />
+                          <stop offset="70%" stopColor="#4b90ff" />
+                          <stop offset="100%" stopColor="#4bffb8" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <span>Ask Gemini</span>
                   </button>
-                  
+
                   <button
                     className="close-player-btn"
                     onClick={() => {
@@ -389,14 +429,21 @@ function Courses() {
                 </div>
               </div>
 
-              <video controls autoPlay className="actual-video-element" src={playingVideo.video_url}>
+              <video
+                controls
+                autoPlay
+                className="actual-video-element"
+                src={playingVideo.video_url}
+              >
                 Your browser does not support HTML video.
               </video>
 
               {playingVideo.description && (
                 <div className="player-description-box">
                   <h4 className="about-video-header">About this video</h4>
-                  <p className="about-video-paragraph">{playingVideo.description}</p>
+                  <p className="about-video-paragraph">
+                    {playingVideo.description}
+                  </p>
                 </div>
               )}
             </div>
@@ -405,25 +452,37 @@ function Courses() {
             {isAiOpen && (
               <div className="gemini-split-panel">
                 <div className="ai-panel-header">
-                  <h4><i className="fa-solid fa-brain"></i> Gemini AI Assistant</h4>
+                  <h4>
+                    <i className="fa-solid fa-brain"></i> Gemini AI Assistant
+                  </h4>
                   <button onClick={() => setIsAiOpen(false)}>✖</button>
                 </div>
-                
+
                 <div className="ai-chat-body">
                   {aiMessages.map((msg, i) => (
                     <div key={i} className={`ai-bubble ${msg.sender}`}>
-                      <strong>{msg.sender === "user" ? "You" : "Gemini"}</strong>
-                      
+                      <strong>
+                        {msg.sender === "user" ? "You" : "Gemini"}
+                      </strong>
+
                       {/* 🚨 PARSES THE AI BOLD STARS (**) GRACEFULLY INTO HTML ELEMENTS */}
-                      <p dangerouslySetInnerHTML={{
-                        __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                      }} />
-                      
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: msg.text.replace(
+                            /\*\*(.*?)\*\*/g,
+                            "<strong>$1</strong>",
+                          ),
+                        }}
+                      />
                     </div>
                   ))}
-                  {aiLoading && <div className="ai-bubble bot loading">Gemini is thinking...</div>}
+                  {aiLoading && (
+                    <div className="ai-bubble bot loading">
+                      Gemini is thinking...
+                    </div>
+                  )}
                 </div>
-                
+
                 <form onSubmit={handleAiChatSubmit} className="ai-chat-footer">
                   <input
                     type="text"
@@ -438,7 +497,6 @@ function Courses() {
                 </form>
               </div>
             )}
-
           </div>
         </div>
       )}
