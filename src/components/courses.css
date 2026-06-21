@@ -231,10 +231,12 @@
 .player-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  /* 🚨 CHANGED: Align items to flex-start so buttons stay anchored to the top right if text expands to 3 lines */
+  align-items: flex-start; 
   padding: 15px 20px;
   background: #1a1a1a;
   color: white;
+  width: 100%;
 }
 
 .player-header h3 {
@@ -251,6 +253,9 @@
   cursor: pointer;
   font-weight: bold;
   transition: color 0.2s;
+  position: relative;
+  top: -7px;
+  left: 10px;
 }
 
 .close-player-btn:hover {
@@ -262,6 +267,8 @@
   max-height: 80vh;
   outline: none; 
 }
+
+
 /* =========================================
    LOGIN WARNING BANNER
    ========================================= */
@@ -639,6 +646,15 @@
   margin: 0 0 10px 0;
   font-size: 1.4rem;
   color: #212529;
+}
+
+.Vidtitle{
+  font-size: 26px;        
+  font-weight: 700 !important;      
+  color: #ffffff;         
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
 }
 
 .custom-confirm-box p {
@@ -1229,6 +1245,115 @@
   50% { opacity: 1; }
 }
 
+
+.ask-gemini-btn {
+  /* 🎨 Smooth dark background matching your screenshot */
+  background-color: #3c3030; 
+  color: #ffffff;
+  border: none;
+  
+  /* 💊 Perfect Pill Shape Padding */
+  padding: 6px 12px;
+  border-radius: 40px; 
+  
+  /* Typography rules */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  
+  /* Alignment layout */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* Clean spacing between image and text */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  
+  /* Clean touch interactions */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  top: -7px;
+}
+
+/* Hover effect */
+.ask-gemini-btn:hover {
+  background-color: #4b3d3d;
+}
+
+/* 📐 Perfect Icon Image Sizing */
+.gemini-icon-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  display: block;
+}
+
+
+.player-header h3.Vidtitle {
+  flex: 1;                   /* Automatically stretches to use all space up to the buttons */
+  font-size: 24px;          /* Big and clear header typography */
+  font-weight: 700;          /* Bolder look */
+  color: #ffffff;
+  line-height: 1.4;
+  margin: 0;
+  
+  /* 🚨 THE MAGIC: Permits natural wrapping onto lines 2, 3, or 4 on desktop screens */
+  white-space: normal !important; 
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-wrap: break-word;
+  
+  /* Safe clearance gap before hitting the "Ask Gemini" button boundary */
+  margin-right: 24px; 
+}
+
+/* 🚨 NEW: Keeps buttons collected cleanly in a horizontal row on desktop */
+.player-header-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;            /* 🚨 CRUCIAL: Stops a long title sentence from crushing button width */
+}
+
+/* Clean alignment resets for desktop buttons */
+.ask-gemini-btn {
+  background-color: #3c3030; 
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 40px; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; 
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+  
+  position: relative;
+  top: 0px !important;       /* Removes old offset traps */
+}
+
+.close-player-btn {
+  background: none;
+  border: none;
+  color: #ff4d4d;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.2s;
+  
+  position: relative;
+  top: 0px !important;       /* Removes old offset traps */
+  left: 0px !important;
+}
+
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {
 
@@ -1280,7 +1405,7 @@
   }
   
   .player-header h3 {
-    font-size: 14px;
+    font-size: 18px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1341,6 +1466,70 @@
     margin: 8px auto 16px;
     width: 92%;
   }
+  .close-player-btn {
+    top: 0px;
+  }
+  .ask-gemini-btn{
+    top: 0px;
+  }
+
+
+
+  /* 1. Forces the header container to stay in a flat inline row layout like Desktop */
+  .player-header {
+    display: flex;
+    flex-direction: row !important; 
+    justify-content: space-between;
+    align-items: flex-start; /* Anchors buttons to the top right if text gets long */
+    padding: 15px;
+    background: #1a1a1a;
+    width: 100%;
+  }
+
+  /* 2. THE MAGIC TITLE: Wraps onto multiple lines and stretches right up to the buttons */
+  .player-header h3.Vidtitle {
+    flex: 1;                 /* Automatically stretches to occupy all available space */
+    font-size: 18px !important; /* Slightly smaller text so it looks neat on phone screens */
+    font-weight: 700 !important;
+    color: #ffffff;
+    line-height: 1.4;
+    margin: 0;
+    
+    /* 🚨 CLEAN FIX: Removes old truncation dots and forces multi-line expansion */
+    white-space: normal !important; 
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-wrap: break-word;
+    
+    /* Safe margin gap before hitting the Gemini button boundary */
+    margin-right: 16px; 
+    max-width: none !important; /* Overrides any fixed pixel widths */
+  }
+
+  /* 3. BUTTONS WRAPPER: Keeps buttons perfectly safe and inline side-by-side */
+  .player-header-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;                /* Compact spacing layout on phones */
+    flex-shrink: 0;          /* 🚨 CRUCIAL: Prevents a long title from squishing the buttons! */
+  }
+
+  /* 4. Compact Button Adjustments for Phone Viewports */
+  .ask-gemini-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    position: relative;
+    top: 0px !important;    /* Resets any unexpected offset positions */
+  }
+
+  .close-player-btn {
+    font-size: 14px;
+    position: relative;
+    top: 0px !important;    /* Resets any unexpected offset positions */
+    left: 0px !important;
+  }
+
 }
 
 /* ========================================================

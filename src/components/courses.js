@@ -374,7 +374,7 @@ function Courses() {
             {/* 🎥 LEFT SIDE PANEL: LECTURE PRESENTATION WINDOW */}
             <div className="video-content-side">
               <div className="player-header">
-                <h3>{playingVideo.title}</h3>
+                <h3 className="Vidtitle">{playingVideo.title}</h3>
                 <div className="player-header-actions">
                   {/* AI CONTEXT TRIGGER ACCESS BUTTON */}
                   <button
@@ -386,33 +386,7 @@ function Courses() {
                       }
                     }}
                   >
-                    {/* ✨ Official Multi-Color Gemini Sparkle SVG */}
-                    <svg
-                      className="gemini-sparkle-svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M12 2C12 7.5 16.5 12 22 12C16.5 12 12 16.5 12 22C12 16.5 7.5 12 2 12C7.5 12 12 7.5 12 2Z"
-                        fill="url(#gemini-gradient)"
-                      />
-                      <defs>
-                        <linearGradient
-                          id="gemini-gradient"
-                          x1="2"
-                          y1="2"
-                          x2="22"
-                          y2="22"
-                          gradientUnits="userSpaceOnUse"
-                        >
-                          <stop offset="0%" stopColor="#ff4b4b" />
-                          <stop offset="30%" stopColor="#ffb84b" />
-                          <stop offset="70%" stopColor="#4b90ff" />
-                          <stop offset="100%" stopColor="#4bffb8" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
+                   
                     <span>Ask Gemini</span>
                   </button>
 
