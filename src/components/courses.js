@@ -366,7 +366,7 @@ function Courses() {
                                 className="dropdown-item delete-opt"
                                 onClick={(e) => handleSaveClick(e, video.id)}
                               >
-                                <i className="fa-solid fa-bookmark-slash"></i>{" "}
+                                <i class="fa-regular fa-bookmark"></i>{" "}
                                 Unsave Video
                               </div>
                             ) : (
