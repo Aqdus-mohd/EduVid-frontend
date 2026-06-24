@@ -224,14 +224,19 @@ html, body, #root {
 
   /* Fix the links so they fit on the top bar */
   .nel {
-    width: auto;
-    height: 40px;
-    margin: 0;
-    padding: 0 15px;
-    border-radius: 20px;
+    width: auto !important;    /* Permits the item box container width to adjust dynamically */
+    height: 40px !important;
+    margin: 0 !important;
+    padding: 0 10px !important; /* Tightens side padding so all 4 tabs sit securely side-by-side */
+    border-radius: 20px !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+  }
+  .nel .icon {
+    margin-right: 6px; /* Tightens space on mobile viewports */
   }
   .nel-1 { margin-top: 0; }
-
+  
   /* 3. FIX THE CONTENT AREA */
   .content {
     width: 100% !important;
@@ -254,7 +259,6 @@ html, body, #root {
   .label{
     width: 50px !important;
   }
-  .nel-1 { margin-top: 0; }
 
   /* 4. FIX HEADER / SEARCH / PROFILE */
   .searchbar {
@@ -321,4 +325,6 @@ html, body, #root {
     height: 200px;
     object-fit: cover;
   }
+
+  
 }

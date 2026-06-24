@@ -1363,29 +1363,44 @@
   }
 
   .public-course-card {
-    aspect-ratio: 1 / 1; 
+    aspect-ratio: auto !important; 
+    min-height: 200px; /* Gives a safe minimum height workspace */
+    display: flex;
+    flex-direction: column;
   }
 
   .public-card-img {
-    height: 65%; /* Take up half the square */
+    height: 130px !important;
+    object-fit: cover;
+    flex-shrink: 0;
   }
 
   .public-card-info {
-    padding: 10px; /* Less padding so text fits */
-    justify-content: space-evenly;
+    padding: 10px !important;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Pushes buttons perfectly to the bottom */
+    
   }
 
   .public-card-title {
-    font-size: 14px; /* Smaller title */
+    font-size: 14px !important;
+    line-height: 1.3;
     margin: 0;
+    white-space: normal !important;
     display: -webkit-box;
-    -webkit-line-clamp: 2; 
+    -webkit-line-clamp: 2; /* Safe cut-off after 2 lines maximum */
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .view-btn {
-    font-size: 11px; /* Smaller button text */
+  .view-btn, 
+  .course-manage-btn-text,
+  .course-action-dropdown {
+    font-size: 12px !important; /* Slightly smaller typography scale to prevent text overflow */
+    align-self: flex-start;
+    margin-top: 0px;
   }
   
   .course-detail-header {

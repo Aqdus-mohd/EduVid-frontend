@@ -185,6 +185,17 @@ function AppContent() {
           >
             Your Courses
           </Link>
+          <Link
+            to="/saved"
+            className={`nel nel-3 ${
+              activenav === "saved" ? "setwhite" : "setblue"
+            }`}
+            onClick={() => setactivenav("saved")}
+            draggable="false"
+          >
+            <i className="fa-solid fa-bookmark" style={{ marginRight: '8px',position: 'relative',top: '2px' }}></i> 
+            Saved
+          </Link>
         </div>
         {/* logout */}
         {isPrClicked && (
