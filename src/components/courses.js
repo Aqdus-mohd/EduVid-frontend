@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSearchParams, Link } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import "./courses.css";
+import toast from "react-hot-toast";
 
 function Courses() {
   const { userInfo } = useContext(UserContext);
@@ -216,6 +217,25 @@ function Courses() {
     alert(`Update option clicked for: ${video.title}`);
   };
 
+  //function to add or remove video from saved video table
+  const handleSaveClick = async (e, videoId) => {
+    e.stopPropagation(); // Prevents the video modal player from jumping up
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        `https://eduvid-backend-zfkv.onrender.com/api/upload/save/${videoId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      toast(res.data.message);
+      setActiveMenuId(null); // Close the dropdown menu neatly
+    } catch (err) {
+      console.error("Failed to save video:", err);
+      alert("Error bookmarking video.");
+    }
+  };
+
   if (loading) return <div className="loading-text">Loading courses...</div>;
 
   return (
@@ -316,20 +336,21 @@ function Courses() {
                             </h4>
                           </div>
                         </div>
+                        {/* button visible to everyone so students can click it to open options */}
+                        <button
+                          className="three-dots-btn"
+                          onClick={(e) => toggleMenu(e, video.id)}
+                        >
+                          <i className="fa-solid fa-ellipsis-vertical"></i>
+                        </button>
 
                         {activeMenuId === video.id && (
                           <div className="dropdown-options-menu">
                             <div
                               className="dropdown-item edit-opt"
-                              onClick={(e) => handleUpdateClick(e, video)}
+                              onClick={(e) => handleSaveClick(e, video.id)}
                             >
-                              <i className="fa-solid fa-pen"></i> Edit
-                            </div>
-                            <div
-                              className="dropdown-item delete-opt"
-                              onClick={(e) => handleDeleteClick(e, video.id)}
-                            >
-                              <i className="fa-solid fa-trash"></i> Delete
+                              <i className="fa-solid fa-pen"></i> Save Video
                             </div>
                           </div>
                         )}
@@ -386,7 +407,6 @@ function Courses() {
                       }
                     }}
                   >
-                   
                     <span>Ask Gemini</span>
                   </button>
 

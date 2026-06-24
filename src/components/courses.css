@@ -1352,11 +1352,35 @@
   top: 0px !important;       /* Removes old offset traps */
   left: 0px !important;
 }
+.dropdown-item:hover {
+  background-color: #e2e6ea;
+}
 
+/* Accent highlight color when hovering over the save choice icon */
+.dropdown-item:has(.fa-bookmark):hover {
+  color: #4b44af; /* Matches your premium purple branding theme */
+}
 
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {
 
+  .content {
+    width: 100% !important;
+    
+    /* 1. Break the strict 100vh desktop lock completely */
+    height: auto !important; 
+    min-height: calc(100vh - 60px) !important; /* Accounts for top navigation bar spacing */
+    
+    /* 2. Tell the container layout to manage its own scrolling window */
+    overflow-y: auto !important; 
+    overflow-x: hidden !important;
+    
+    /* 3. Add touch deceleration behavior for smooth iPhone scrolling tracks */
+    -webkit-overflow-scrolling: touch !important;
+    
+    padding: 15px !important;
+    padding-bottom: 200px !important; /* Safe zone clearance padding at the bottom */
+  }
   .public-course-grid {
     grid-template-columns: repeat(2, 1fr); /* Exactly 2 per row */
     gap: 15px; /* Slightly smaller gap to save space */

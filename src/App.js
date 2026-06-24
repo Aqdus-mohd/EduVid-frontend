@@ -144,6 +144,8 @@ function AppContent() {
         return "Log In";
       case "/VideoUpload":
         return "Upload";
+      case "/saved":
+        return "Saved Videos";
       default:
         return "";
     }
