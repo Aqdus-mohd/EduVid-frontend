@@ -101,7 +101,6 @@ function Courses() {
       console.log("🕵️ REACT SPY - DATA FROM BACKEND:", res.data);
       setVideos(res.data);
       //fetch videos that are saved
-      const token = localStorage.getItem("token");
       axios
         .get(
           "https://eduvid-backend-zfkv.onrender.com/api/upload/saved-list-ids",
