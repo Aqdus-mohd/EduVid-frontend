@@ -63,7 +63,7 @@ function MyCourses() {
     setActiveMenuId(activeMenuId === videoId ? null : videoId);
   };
 
-  
+
   // API Call: Get courses belonging to the specific teacher ID
   const fetchMyCourses = async (userId) => {
     try {

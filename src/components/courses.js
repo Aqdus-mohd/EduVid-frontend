@@ -33,6 +33,8 @@ function Courses() {
   const [aiMessages, setAiMessages] = useState([]);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+  //update the video saved or not
+  const [savedVideoIds, setSavedVideoIds] = useState([]);
 
   useEffect(() => {
     fetchAllCourses();
@@ -98,6 +100,21 @@ function Courses() {
       );
       console.log("🕵️ REACT SPY - DATA FROM BACKEND:", res.data);
       setVideos(res.data);
+      //fetch videos that are saved
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          "https://eduvid-backend-zfkv.onrender.com/api/upload/saved-list-ids",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+        .then((response) => {
+          setSavedVideoIds(response.data); // e.g., returns array [102, 105, 110]
+        })
+        .catch((err) =>
+          console.error("Error fetching initial bookmarks list:", err),
+        );
     } catch (err) {
       console.error("Error fetching videos:", err);
     }
@@ -211,12 +228,6 @@ function Courses() {
     }
   };
 
-  const handleUpdateClick = (e, video) => {
-    e.stopPropagation();
-    setActiveMenuId(null);
-    alert(`Update option clicked for: ${video.title}`);
-  };
-
   //function to add or remove video from saved video table
   const handleSaveClick = async (e, videoId) => {
     e.stopPropagation(); // Prevents the video modal player from jumping up
@@ -229,6 +240,11 @@ function Courses() {
       );
 
       toast(res.data.message);
+      if (res.data.isSaved) {
+        setSavedVideoIds((prev) => [...prev, videoId]); // Saved! Add to list
+      } else {
+        setSavedVideoIds((prev) => prev.filter((id) => id !== videoId)); // Unsaved! Remove from list
+      }
       setActiveMenuId(null); // Close the dropdown menu neatly
     } catch (err) {
       console.error("Failed to save video:", err);
@@ -346,12 +362,23 @@ function Courses() {
 
                         {activeMenuId === video.id && (
                           <div className="dropdown-options-menu">
-                            <div
-                              className="dropdown-item edit-opt"
-                              onClick={(e) => handleSaveClick(e, video.id)}
-                            >
-                              <i className="fa-solid fa-pen"></i> Save Video
-                            </div>
+                            {savedVideoIds.includes(video.id) ? (
+                              <div
+                                className="dropdown-item delete-opt"
+                                onClick={(e) => handleSaveClick(e, video.id)}
+                              >
+                                <i className="fa-solid fa-bookmark-slash"></i>{" "}
+                                Unsave Video
+                              </div>
+                            ) : (
+                              <div
+                                className="dropdown-item edit-opt"
+                                onClick={(e) => handleSaveClick(e, video.id)}
+                              >
+                                <i className="fa-solid fa-bookmark"></i> Save
+                                Video
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
