@@ -57,6 +57,13 @@ function MyCourses() {
     }
   }, [selectedCourseId, isTeacher]);
 
+
+  const toggleMenu = (e, videoId) => {
+    e.stopPropagation();
+    setActiveMenuId(activeMenuId === videoId ? null : videoId);
+  };
+
+  
   // API Call: Get courses belonging to the specific teacher ID
   const fetchMyCourses = async (userId) => {
     try {
