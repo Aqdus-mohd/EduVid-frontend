@@ -1,0 +1,47 @@
+.no-saved-box {
+  padding: 40px;
+  background-color: white;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.no-saved-text {
+  font-size: 18px;
+  color: #666000;
+  margin: 0;
+}
+
+.saved-menu-container {
+  padding: 16px 20px 0 20px;
+  width: 100%;
+}
+
+.saved-header-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.saved-video-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.unsave-action-btn {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.unsave-action-btn:hover {
+  opacity: 0.8;
+}
+
+.saved-thumbnail-spacer {
+  margin-top: 10px;
+}
