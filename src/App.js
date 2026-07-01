@@ -330,6 +330,14 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/saved"
+              element={
+                <ProtectedRoute>
+                  <VideoUpload />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </div>
       </div>

@@ -15,8 +15,6 @@ export function UserContextProvider({ children }) {
   useEffect(() => {
     const storedUser = localStorage.getItem("userInfo");
 
-    // console.log("SPY 2 - Raw Storage:", storedUser);
-
     if (storedUser) {
       try {
         // Parse the JSON string back into an object
