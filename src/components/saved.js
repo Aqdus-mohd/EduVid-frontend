@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../courses.css"; // Reuse your existing premium course dashboard styling!
+import "./courses.css"; // Reuse your existing premium course dashboard styling!
 
 function SavedVideos() {
   const [savedVideos, setSavedVideos] = useState([]);
