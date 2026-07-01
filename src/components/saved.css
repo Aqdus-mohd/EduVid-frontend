@@ -12,7 +12,7 @@
 }
 
 .saved-menu-container {
-  padding: 16px 20px 0 20px;
+  padding-top: 16px;
   width: 100%;
 }
 
@@ -25,7 +25,8 @@
 
 .saved-video-title {
   margin: 0;
-  font-size: 1rem;
+  color: #32396e;
+  font-size: 16px;
 }
 
 .unsave-action-btn {
