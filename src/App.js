@@ -18,6 +18,7 @@ import { useState, useEffect, useRef } from "react";
 import UserContext from "./context/UserContext";
 import VideoUpload from "./components/VideoUpload";
 import { Toaster } from "react-hot-toast";
+import SavedVideos from "./components/saved";
 
 function AppContent() {
   const navigate = useNavigate();
@@ -334,7 +335,7 @@ function AppContent() {
               path="/saved"
               element={
                 <ProtectedRoute>
-                  <VideoUpload />
+                  <SavedVideos />
                 </ProtectedRoute>
               }
             />
