@@ -1359,7 +1359,7 @@
 /* Accent highlight color when hovering over the save choice icon */
 .dropdown-item:has(.fa-bookmark):hover {
   color: #4b44af; /* Matches your premium purple branding theme */
-}
+} 
 
 /* --- MOBILE RESPONSIVENESS --- */
 @media screen and (max-width: 768px) {

@@ -214,13 +214,13 @@ function AppContent() {
                 className="log-out"
                 onClick={() => {
                   try {
-                    console.log("🚨 1. LOGOUT CLICKED!");
+                    console.log("  LOGOUT CLICKED");
 
                     // NUKE ALL LOCAL STORAGE (This guarantees we don't miss the wrong key name)
                     localStorage.removeItem("token");
                     localStorage.removeItem("userInfo");
                     localStorage.removeItem("isLoggedIn");
-                    console.log("🚨 2. LOCAL STORAGE NUKED!");
+                    console.log(" LOCAL STORAGE DONE");
 
                     setIsLoggedIn(false);
                     setUserInfo({

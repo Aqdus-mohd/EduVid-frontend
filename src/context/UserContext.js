@@ -10,7 +10,7 @@ export function UserContextProvider({ children }) {
     return savedUser && savedUser !== "undefined" ? JSON.parse(savedUser) : null; 
   });
 
-  // 1. THIS IS THE MISSING PIECE
+
   // When the app starts (or refreshes), check localStorage for saved data
   useEffect(() => {
     const storedUser = localStorage.getItem("userInfo");
